@@ -264,6 +264,129 @@ const server = http.createServer(async (req, res) => {
     return;
   }
 
+  // ─── Structured panel data endpoints ──────────────────────────────────────
+
+  // GET /api/data/gameprojects — list of game projects from Obsidian/Projects
+  if (pathname === '/api/data/gameprojects') {
+    cors(res);
+    const GAME_DIRS = ['FPS_Game_Godot','ExtractionShooter','MinecraftClone','Games','MyWebUI','Sandbox'];
+    const projects = [];
+    for (const dir of GAME_DIRS) {
+      const full = path.join(OBSIDIAN_VAULT, 'Projects', dir);
+      if (!fs.existsSync(full)) continue;
+      const files = fs.readdirSync(full).filter(f => f.endsWith('.md'));
+      let spec = '', plan = '';
+      for (const f of files) {
+        const content = fs.readFileSync(path.join(full, f), 'utf8');
+        if (f.match(/SPEC|README|index/i)) spec = content.slice(0, 800);
+        if (f.match(/PLAN|ROADMAP|TASK/i)) plan = content.slice(0, 600);
+      }
+      // Count tasks
+      const allMd = files.map(f => {
+        try { return fs.readFileSync(path.join(full, f), 'utf8'); } catch { return ''; }
+      }).join('\n');
+      const open = (allMd.match(/- \[ \]/g) || []).length;
+      const done = (allMd.match(/- \[x\]/gi) || []).length;
+      projects.push({ id: dir, name: dir.replace(/_/g,' '), files: files.length, spec, plan, openTasks: open, doneTasks: done });
+    }
+    json(res, 200, projects);
+    return;
+  }
+
+  // GET /api/data/gameproject?id=FPS_Game_Godot — full project detail
+  if (pathname === '/api/data/gameproject') {
+    cors(res);
+    const id = url.searchParams.get('id') || '';
+    if (!id || id.includes('..')) { err(res, 400, 'bad id'); return; }
+    const full = path.join(OBSIDIAN_VAULT, 'Projects', id);
+    if (!fs.existsSync(full)) { err(res, 404, 'not found'); return; }
+    const files = [];
+    for (const f of fs.readdirSync(full)) {
+      if (!f.endsWith('.md') && !f.endsWith('.gd') && !f.endsWith('.tscn') && !f.endsWith('.json')) continue;
+      try {
+        const content = fs.readFileSync(path.join(full, f), 'utf8');
+        files.push({ name: f, content: content.slice(0, 2000) });
+      } catch {}
+    }
+    json(res, 200, { id, files });
+    return;
+  }
+
+  // GET /api/data/startup — Buizznethub overview
+  if (pathname === '/api/data/startup') {
+    cors(res);
+    const base = path.join(OBSIDIAN_VAULT, 'Projects', 'Buizznethub');
+    const readFile = (name) => {
+      try { return fs.readFileSync(path.join(base, name), 'utf8'); } catch { return ''; }
+    };
+    const readme   = readFile('README.md');
+    const roadmap  = readFile('ROADMAP.md');
+    const pitch    = readFile('Pitch-Deck-Buizznethub.md');
+    const business = readFile('business.md');
+    const investor = readFile('investor-outreach-kanban.md');
+    json(res, 200, {
+      readme:   readme.slice(0, 1500),
+      roadmap:  roadmap.slice(0, 2000),
+      pitch:    pitch.slice(0, 1200),
+      business: business.slice(0, 1200),
+      investor: investor.slice(0, 1000),
+    });
+    return;
+  }
+
+  // GET /api/data/jobs — SQLite jobs database
+  if (pathname === '/api/data/jobs') {
+    cors(res);
+    const dbPath = path.join(OBSIDIAN_VAULT, 'jobs.db');
+    try {
+      // Use child_process to run python3 sqlite query (no sqlite3 npm module needed)
+      const { execSync } = require('child_process');
+      const result = execSync(`python3 -c "
+import sqlite3, json, sys
+conn = sqlite3.connect('${dbPath}')
+conn.row_factory = sqlite3.Row
+cur = conn.cursor()
+cur.execute('SELECT * FROM jobs ORDER BY id DESC LIMIT 100')
+rows = [dict(r) for r in cur.fetchall()]
+print(json.dumps(rows))
+"`, { encoding: 'utf8' });
+      const jobs = JSON.parse(result.trim());
+      json(res, 200, { jobs });
+    } catch (e) {
+      // Fallback: read JSON file
+      try {
+        const jsonPath = path.join(OBSIDIAN_VAULT, 'job-applications', 'jobs_found.json');
+        const jobs = JSON.parse(fs.readFileSync(jsonPath, 'utf8'));
+        json(res, 200, { jobs });
+      } catch {
+        json(res, 200, { jobs: [] });
+      }
+    }
+    return;
+  }
+
+  // GET /api/data/lifetoday — today's daily note + tasks + calendar
+  if (pathname === '/api/data/lifetoday') {
+    cors(res);
+    const today = new Date().toISOString().slice(0, 10);
+    const readFile = (p) => { try { return fs.readFileSync(p, 'utf8'); } catch { return ''; } };
+    const dailyNote = readFile(path.join(OBSIDIAN_VAULT, 'Daily', `${today}.md`));
+    const tasks     = readFile(path.join(OBSIDIAN_VAULT, 'Daily', 'TASKS.md'));
+    const calendar  = readFile(path.join(OBSIDIAN_VAULT, 'Life', 'Calendar.md'));
+    // Parse todos from daily note
+    const parseTasks = (md) => (md || '').split('\n')
+      .filter(l => /^- \[[ xX]\]/.test(l.trim()))
+      .map(l => ({ done: /\[[xX]\]/.test(l), text: l.replace(/.*?\[[ xX]\]\s*/, '').trim() }));
+    json(res, 200, {
+      date: today,
+      dailyNote: dailyNote.slice(0, 3000),
+      tasks: tasks.slice(0, 2000),
+      calendar: calendar.slice(0, 1500),
+      todos: parseTasks(dailyNote || tasks),
+    });
+    return;
+  }
+
   // ─── Static files ─────────────────────────────────────────────────────────
   let filePath = pathname === '/' ? '/index.html' : pathname;
   filePath = path.join(__dirname, filePath);

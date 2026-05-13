@@ -334,34 +334,101 @@ const server = http.createServer(async (req, res) => {
     return;
   }
 
-  // GET /api/data/jobs — SQLite jobs database
-  if (pathname === '/api/data/jobs') {
+  // ─── Jobs DB endpoints ────────────────────────────────────────────────────
+  const DB_PATH = path.join(OBSIDIAN_VAULT, 'jobs.db');
+
+  function runPy(script) {
+    const { execSync } = require('child_process');
+    return execSync(`python3 -c "${script.replace(/"/g, '\\"')}"`, { encoding: 'utf8' }).trim();
+  }
+
+  // GET /api/data/jobs — all jobs from SQLite
+  if (pathname === '/api/data/jobs' && req.method === 'GET') {
     cors(res);
-    const dbPath = path.join(OBSIDIAN_VAULT, 'jobs.db');
     try {
-      // Use child_process to run python3 sqlite query (no sqlite3 npm module needed)
-      const { execSync } = require('child_process');
-      const result = execSync(`python3 -c "
-import sqlite3, json, sys
-conn = sqlite3.connect('${dbPath}')
-conn.row_factory = sqlite3.Row
-cur = conn.cursor()
-cur.execute('SELECT * FROM jobs ORDER BY id DESC LIMIT 100')
-rows = [dict(r) for r in cur.fetchall()]
-print(json.dumps(rows))
-"`, { encoding: 'utf8' });
-      const jobs = JSON.parse(result.trim());
-      json(res, 200, { jobs });
-    } catch (e) {
-      // Fallback: read JSON file
+      const result = runPy(`
+import sqlite3,json
+conn=sqlite3.connect('${DB_PATH}')
+conn.row_factory=sqlite3.Row
+cur=conn.cursor()
+cur.execute('SELECT * FROM jobs ORDER BY id DESC')
+print(json.dumps([dict(r) for r in cur.fetchall()]))
+`);
+      json(res, 200, { jobs: JSON.parse(result) });
+    } catch(e) {
       try {
-        const jsonPath = path.join(OBSIDIAN_VAULT, 'job-applications', 'jobs_found.json');
-        const jobs = JSON.parse(fs.readFileSync(jsonPath, 'utf8'));
-        json(res, 200, { jobs });
-      } catch {
-        json(res, 200, { jobs: [] });
-      }
+        const j = JSON.parse(fs.readFileSync(path.join(OBSIDIAN_VAULT,'job-applications','jobs_found.json'),'utf8'));
+        json(res, 200, { jobs: j });
+      } catch { json(res, 200, { jobs: [] }); }
     }
+    return;
+  }
+
+  // POST /api/data/jobs — create new job row
+  if (pathname === '/api/data/jobs' && req.method === 'POST') {
+    cors(res);
+    let body = '';
+    req.on('data', d => body += d);
+    req.on('end', () => {
+      try {
+        const j = JSON.parse(body);
+        const result = runPy(`
+import sqlite3,json
+conn=sqlite3.connect('${DB_PATH}')
+cur=conn.cursor()
+cur.execute('INSERT INTO jobs (title,company,location,url,found_date,applied,applied_date,portal_type,notes,source,stage,salary,contact,next_step) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)',
+  [${JSON.stringify(j.title||'')},${JSON.stringify(j.company||'')},${JSON.stringify(j.location||'')},${JSON.stringify(j.url||'')},${JSON.stringify(j.found_date||new Date().toISOString().slice(0,10))},${j.applied?1:0},${JSON.stringify(j.applied_date||'')},${JSON.stringify(j.portal_type||'')},${JSON.stringify(j.notes||'')},${JSON.stringify(j.source||'manual')},${JSON.stringify(j.stage||'lead')},${JSON.stringify(j.salary||'')},${JSON.stringify(j.contact||'')},${JSON.stringify(j.next_step||'')}])
+conn.commit()
+print(cur.lastrowid)
+`);
+        json(res, 200, { id: parseInt(result) });
+      } catch(e) { err(res, 500, e.message); }
+    });
+    return;
+  }
+
+  // PATCH /api/data/jobs/:id — update fields on a job
+  if (pathname.startsWith('/api/data/jobs/') && req.method === 'PATCH') {
+    cors(res);
+    const jobId = parseInt(pathname.split('/').pop());
+    if (isNaN(jobId)) { err(res, 400, 'bad id'); return; }
+    let body = '';
+    req.on('data', d => body += d);
+    req.on('end', () => {
+      try {
+        const fields = JSON.parse(body);
+        const allowed = ['title','company','location','url','found_date','applied','applied_date','portal_type','notes','source','stage','salary','contact','next_step'];
+        const sets = Object.keys(fields).filter(k => allowed.includes(k));
+        if (!sets.length) { json(res, 200, { ok: true }); return; }
+        const setParts = sets.map(k => `${k}=?`).join(',');
+        const vals = sets.map(k => fields[k]);
+        runPy(`
+import sqlite3
+conn=sqlite3.connect('${DB_PATH}')
+cur=conn.cursor()
+cur.execute('UPDATE jobs SET ${setParts} WHERE id=?',${JSON.stringify([...vals, jobId])})
+conn.commit()
+`);
+        json(res, 200, { ok: true });
+      } catch(e) { err(res, 500, e.message); }
+    });
+    return;
+  }
+
+  // DELETE /api/data/jobs/:id
+  if (pathname.startsWith('/api/data/jobs/') && req.method === 'DELETE') {
+    cors(res);
+    const jobId = parseInt(pathname.split('/').pop());
+    if (isNaN(jobId)) { err(res, 400, 'bad id'); return; }
+    try {
+      runPy(`
+import sqlite3
+conn=sqlite3.connect('${DB_PATH}')
+conn.cursor().execute('DELETE FROM jobs WHERE id=?',[${jobId}])
+conn.commit()
+`);
+      json(res, 200, { ok: true });
+    } catch(e) { err(res, 500, e.message); }
     return;
   }
 

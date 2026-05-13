@@ -777,6 +777,142 @@
     letter-spacing: .08em;
   }
 
+  /* ── Job tracker: tabs + table + calendar views ─────────────── */
+  .jt-wrap { display: flex; flex-direction: column; gap: 0; height: 100%; }
+  .jt-stats-bar {
+    display: flex; gap: 6px; flex-wrap: wrap;
+    padding: 10px 0 8px;
+    border-bottom: 1px solid var(--line-2);
+    margin-bottom: 10px;
+  }
+  .jt-stat-pill {
+    background: var(--bg-2); border: 1px solid var(--line);
+    border-radius: 20px; padding: 4px 12px;
+    font-size: 10px; letter-spacing: .14em; color: var(--ink-dim);
+  }
+  .jt-stat-pill b { color: var(--c-jobs); margin-right: 4px; }
+  .jt-tabs {
+    display: flex; gap: 6px; align-items: center;
+    margin-bottom: 12px;
+  }
+  .jt-tab {
+    appearance: none; background: transparent;
+    border: 1px solid var(--line-2); border-radius: 6px;
+    color: var(--ink-mute); padding: 5px 14px;
+    font-family: inherit; font-size: 10px; letter-spacing: .16em;
+    cursor: pointer; transition: all .15s;
+  }
+  .jt-tab:hover { color: var(--ink); border-color: var(--line); }
+  .jt-tab.active { background: var(--c-jobs); color: #0a0a0f; border-color: var(--c-jobs); font-weight: 800; }
+  .jt-tab-add {
+    margin-left: auto; appearance: none; background: transparent;
+    border: 1px solid var(--c-jobs); border-radius: 6px;
+    color: var(--c-jobs); padding: 5px 14px;
+    font-family: inherit; font-size: 10px; letter-spacing: .14em; cursor: pointer;
+  }
+  .jt-tab-add:hover { background: var(--c-jobs); color: #0a0a0f; }
+  #jt-view-body { flex: 1; overflow: auto; }
+
+  /* Kanban tweaks */
+  .jt-board { display: grid; grid-template-columns: repeat(5,1fr); gap: 10px; }
+  @media (max-width:1100px) { .jt-board { grid-template-columns: repeat(2,1fr); } }
+  .jt-drop { display: flex; flex-direction: column; gap: 8px; flex: 1; min-height: 80px; }
+  .drop-hint { text-align:center; color:var(--ink-mute); font-size:10px; letter-spacing:.15em; padding:16px; font-style:italic; }
+  .jt-card .dates { font-size:9px; color:var(--ink-mute); letter-spacing:.08em; }
+
+  /* Table view */
+  .jt-table-wrap { overflow: auto; }
+  .jt-table-toolbar {
+    display: flex; gap: 8px; margin-bottom: 10px; flex-wrap: wrap;
+  }
+  .jt-table-toolbar input, .jt-table-toolbar select {
+    background: var(--bg-2); border: 1px solid var(--line-2);
+    color: var(--ink); border-radius: 6px; padding: 6px 10px;
+    font-family: inherit; font-size: 11px;
+  }
+  .jt-table-toolbar input { flex: 1; min-width: 160px; }
+  .jt-table-toolbar input:focus, .jt-table-toolbar select:focus { outline: 1px solid var(--c-jobs); }
+  .jt-table {
+    width: 100%; border-collapse: collapse; font-size: 11px;
+  }
+  .jt-table th {
+    text-align: left; padding: 7px 10px;
+    font-size: 9px; letter-spacing: .18em; color: var(--ink-mute);
+    border-bottom: 1px solid var(--line-2);
+    cursor: pointer; user-select: none;
+    white-space: nowrap;
+  }
+  .jt-table th:hover { color: var(--c-jobs); }
+  .jt-table th.sorted-asc::after { content: ' ↑'; color: var(--c-jobs); }
+  .jt-table th.sorted-desc::after { content: ' ↓'; color: var(--c-jobs); }
+  .jt-table td {
+    padding: 7px 10px; border-bottom: 1px solid var(--line);
+    color: var(--ink-dim); vertical-align: top;
+    max-width: 180px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  }
+  .jt-table tr:hover td { background: #ffffff06; color: var(--ink); }
+  .jt-table td.co { color: var(--ink); font-weight: 700; }
+  .jt-table td a { color: var(--c-jobs); text-decoration: none; }
+  .jt-table td a:hover { text-decoration: underline; }
+  .stage-pill {
+    display: inline-block; padding: 2px 8px; border-radius: 4px;
+    font-size: 9px; letter-spacing: .14em; font-weight: 700;
+  }
+  .stage-pill.lead     { background: #8b8aa820; color: #8b8aa8; }
+  .stage-pill.applied  { background: #3b82f620; color: #3b82f6; }
+  .stage-pill.interview{ background: #f59e0b20; color: #f59e0b; }
+  .stage-pill.offer    { background: #00ff8820; color: #00ff88; }
+  .stage-pill.rejected { background: #ef444420; color: #ef4444; }
+  .jt-table .actions-cell { display: flex; gap: 4px; align-items: center; }
+  .jt-table .actions-cell button {
+    appearance: none; background: transparent;
+    border: 1px solid var(--line-2); color: var(--ink-dim);
+    border-radius: 4px; padding: 2px 6px;
+    font-family: inherit; font-size: 9px; letter-spacing: .1em; cursor: pointer;
+  }
+  .jt-table .actions-cell button:hover { color: var(--c-jobs); border-color: var(--c-jobs); }
+
+  /* Full calendar view */
+  .jt-calendar-wrap { padding-bottom: 20px; }
+  .jt-cal-nav {
+    display: flex; align-items: center; gap: 14px;
+    margin-bottom: 14px;
+  }
+  .jt-cal-nav button {
+    appearance: none; background: transparent;
+    border: 1px solid var(--line-2); color: var(--ink-dim);
+    border-radius: 6px; padding: 5px 12px;
+    font-family: inherit; font-size: 10px; letter-spacing: .14em; cursor: pointer;
+  }
+  .jt-cal-nav button:hover { color: var(--c-jobs); border-color: var(--c-jobs); }
+  .jt-cal-title { font-size: 14px; font-weight: 700; color: var(--ink); letter-spacing: .1em; }
+  .jt-cal-grid {
+    display: grid; grid-template-columns: repeat(7, 1fr); gap: 3px;
+  }
+  .jt-cal-hd {
+    font-size: 9px; letter-spacing: .15em; color: var(--ink-mute);
+    text-align: center; padding: 4px 0;
+  }
+  .jt-cal-cell {
+    background: var(--bg-2); border: 1px solid var(--line);
+    border-radius: 6px; padding: 5px; min-height: 64px;
+    display: flex; flex-direction: column; gap: 2px;
+    font-size: 10px;
+  }
+  .jt-cal-cell.empty { background: transparent; border-color: transparent; }
+  .jt-cal-cell.today { border-color: var(--c-jobs); background: color-mix(in oklab, var(--c-jobs) 8%, var(--bg-2)); }
+  .jt-cal-cell.has-ev { border-color: var(--line-2); }
+  .jt-day-num { font-size: 11px; font-weight: 700; color: var(--ink-dim); margin-bottom: 2px; }
+  .jt-cal-cell.today .jt-day-num { color: var(--c-jobs); }
+  .jt-ev {
+    font-size: 9px; padding: 2px 4px; border-radius: 3px;
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+    cursor: pointer; letter-spacing: .04em;
+  }
+  .jt-ev:hover { opacity: .8; }
+  .jt-ev-more { font-size: 9px; color: var(--ink-mute); padding: 1px 4px; }
+  .jt-cal-legend { display: flex; gap: 14px; margin-top: 10px; font-size: 10px; letter-spacing: .1em; color: var(--ink-mute); }
+
   /* advanced games */
   .gm-pill {
     display: inline-flex; align-items: center; gap: 4px;
@@ -3155,236 +3291,386 @@ function renderKanban() {
   `;
 }
 
-/* --- JOBS (expanded) --- */
-function jtStats() {
-  const j = STATE.jobs.jobs;
-  const by = (s) => j.filter(x=>x.stage===s).length;
-  const total = j.length;
-  const responded = j.filter(x=> x.stage !== 'lead' && x.log.some(l=>/screen|interview|recruiter|offer|reject/i.test(l.msg))).length;
-  const applied = j.filter(x=>x.stage !== 'lead').length;
-  const respRate = applied ? Math.round(100*responded/applied) : 0;
-  const intRate  = applied ? Math.round(100*by('interview')/applied) : 0;
-  const offerRate = applied ? Math.round(100*by('offer')/applied) : 0;
-  return { total, lead:by('lead'), applied:by('applied'), interview:by('interview'), offer:by('offer'), rejected:by('rejected'), respRate, intRate, offerRate };
+/* --- JOBS — kanban / table / calendar, all backed by jobs.db --- */
+
+// Shared DB helpers
+async function dbSaveJob(dbId, fields) {
+  if (!dbId || String(dbId).startsWith('new_')) return; // unsaved rows skip
+  return fetch(`/api/data/jobs/${dbId}`, {
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(fields),
+  });
 }
 
-function jtUpcomingCal() {
-  const today = new Date();
-  const days = [];
-  for (let i=0; i<7; i++) {
-    const d = new Date(today); d.setDate(today.getDate()+i);
-    const iso = d.toISOString().slice(0,10);
-    const evs = STATE.jobs.jobs.filter(j=> j.next_step === iso);
-    days.push({ d, iso, evs });
+async function dbCreateJob(fields) {
+  const r = await fetch('/api/data/jobs', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(fields),
+  });
+  return r.json(); // { id: number }
+}
+
+async function dbDeleteJob(dbId) {
+  if (!dbId || String(dbId).startsWith('new_')) return;
+  return fetch(`/api/data/jobs/${dbId}`, { method: 'DELETE' });
+}
+
+// Load all jobs from DB into STATE.jobs.jobs
+async function loadJobsFromDB() {
+  try {
+    const d = await fetch('/api/data/jobs').then(r => r.json());
+    if (!Array.isArray(d.jobs)) return;
+    STATE.jobs.jobs = d.jobs.map(db => ({
+      dbId:         db.id,
+      id:           'db_' + db.id,
+      stage:        db.stage || (db.applied ? 'applied' : 'lead'),
+      company:      db.company || '—',
+      role:         db.title  || '—',
+      location:     db.location || '',
+      salary:       db.salary || '',
+      contact:      db.contact || '',
+      source:       db.source || db.portal_type || '',
+      portal_type:  db.portal_type || '',
+      found_date:   db.found_date || '',
+      applied_date: db.applied_date || '',
+      applied:      db.applied ? 1 : 0,
+      next_step:    db.next_step || '',
+      notes:        db.notes || '',
+      url:          db.url || '',
+    }));
+  } catch(e) {}
+}
+
+function jtStats() {
+  const j = STATE.jobs.jobs;
+  const by = s => j.filter(x => x.stage === s).length;
+  return { total:j.length, lead:by('lead'), applied:by('applied'), interview:by('interview'), offer:by('offer'), rejected:by('rejected') };
+}
+
+function renderJobsKanban() {
+  const j = STATE.jobs.jobs;
+  const col = (key, title) => {
+    const items = j.filter(x => x.stage === key);
+    return `<div class="jt-col ${key}" data-col="${key}">
+      <div class="hd"><span class="nm">${title}</span><span class="num">${items.length}</span></div>
+      <div class="jt-drop" data-drop="${key}">
+        ${items.map(c => `
+          <div class="jt-card" draggable="true" data-id="${c.id}">
+            <div class="co">${c.company}</div>
+            <div class="ro">${c.role}</div>
+            <div class="meta">${c.location || '—'} · ${c.portal_type || c.source || ''}</div>
+            <div class="dates">${c.applied_date || c.found_date || ''}</div>
+            <div class="actions">
+              <button data-jt-open="${c.id}">DETAILS</button>
+              ${c.url ? `<a href="${c.url}" target="_blank" style="font-size:9px;color:var(--c-jobs)">LINK</a>` : ''}
+            </div>
+          </div>`).join('') || '<div class="drop-hint">drop here</div>'}
+      </div>
+    </div>`;
+  };
+  return `<div class="jt-board" id="jtBoard">
+    ${col('lead','LEAD')}${col('applied','APPLIED')}${col('interview','INTERVIEW')}${col('offer','OFFER')}${col('rejected','REJECTED')}
+  </div>`;
+}
+
+function renderJobsTable() {
+  const j = STATE.jobs.jobs;
+  const sort = STATE.jobs.tableSort || { key: 'company', dir: 1 };
+  const filter = STATE.jobs.tableFilter || '';
+  const stageF = STATE.jobs.tableStage || '';
+  let rows = j.filter(x =>
+    (!filter || [x.company,x.role,x.location,x.source].some(v => (v||'').toLowerCase().includes(filter.toLowerCase()))) &&
+    (!stageF || x.stage === stageF)
+  );
+  rows = [...rows].sort((a,b) => {
+    const av = (a[sort.key]||'').toString().toLowerCase();
+    const bv = (b[sort.key]||'').toString().toLowerCase();
+    return av < bv ? -sort.dir : av > bv ? sort.dir : 0;
+  });
+  const th = (key, label) => `<th data-sort="${key}" class="${sort.key===key?(sort.dir>0?'sorted-asc':'sorted-desc'):''}">${label}</th>`;
+  return `<div class="jt-table-wrap">
+    <div class="jt-table-toolbar">
+      <input id="jt-filter" placeholder="filter company, title, location…" value="${filter}" />
+      <select id="jt-filter-stage">
+        <option value="">ALL STAGES</option>
+        ${['lead','applied','interview','offer','rejected'].map(s =>
+          `<option value="${s}" ${stageF===s?'selected':''}>${s.toUpperCase()}</option>`).join('')}
+      </select>
+      <span style="font-size:10px;color:var(--ink-mute);align-self:center">${rows.length} / ${j.length}</span>
+    </div>
+    <table class="jt-table" id="jtTable">
+      <thead><tr>
+        ${th('company','COMPANY')}${th('role','ROLE')}${th('location','LOCATION')}${th('stage','STAGE')}
+        ${th('applied_date','APPLIED')}${th('source','SOURCE')}<th>LINK / OPEN</th>
+      </tr></thead>
+      <tbody>
+        ${rows.map(c => `
+          <tr data-id="${c.id}" data-stage="${c.stage}">
+            <td class="co">${c.company}</td>
+            <td>${c.role}</td>
+            <td>${c.location || '—'}</td>
+            <td><span class="stage-pill ${c.stage}">${c.stage.toUpperCase()}</span></td>
+            <td>${c.applied_date || c.found_date || '—'}</td>
+            <td>${c.portal_type || c.source || '—'}</td>
+            <td class="actions-cell">
+              <button data-jt-open="${c.id}">OPEN</button>
+              ${c.url ? `<a href="${c.url}" target="_blank">LINK</a>` : ''}
+            </td>
+          </tr>`).join('')}
+      </tbody>
+    </table>
+  </div>`;
+}
+
+function renderJobsCalendar() {
+  const now = new Date();
+  const year  = STATE.jobs.calYear  !== undefined ? STATE.jobs.calYear  : now.getFullYear();
+  const month = STATE.jobs.calMonth !== undefined ? STATE.jobs.calMonth : now.getMonth();
+  const monthName = new Date(year, month, 1).toLocaleString('default', { month: 'long' });
+  const firstDay = new Date(year, month, 1).getDay();
+  const daysInMonth = new Date(year, month + 1, 0).getDate();
+  const events = {};
+  STATE.jobs.jobs.forEach(j => {
+    const addEv = (date, label, color) => {
+      if (!date) return;
+      const d = date.slice(0, 10);
+      if (d.slice(0,7) !== `${year}-${String(month+1).padStart(2,'0')}`) return;
+      if (!events[d]) events[d] = [];
+      events[d].push({ label, color, id: j.id });
+    };
+    addEv(j.applied_date, j.company, '#3b82f6');
+    addEv(j.found_date,   j.company, '#6366f1');
+    addEv(j.next_step,    j.company + ' →next', '#f59e0b');
+  });
+  const todayIso = new Date().toISOString().slice(0, 10);
+  const wdHeaders = ['SUN','MON','TUE','WED','THU','FRI','SAT'].map(d =>
+    `<div class="jt-cal-hd">${d}</div>`).join('');
+  let cells = '';
+  for (let i = 0; i < firstDay; i++) cells += '<div class="jt-cal-cell empty"></div>';
+  for (let d = 1; d <= daysInMonth; d++) {
+    const iso = `${year}-${String(month+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+    const evs = events[iso] || [];
+    const isToday = iso === todayIso;
+    cells += `<div class="jt-cal-cell ${isToday?'today':''} ${evs.length?'has-ev':''}">
+      <div class="jt-day-num">${d}</div>
+      ${evs.slice(0,3).map(e =>
+        `<div class="jt-ev" style="background:${e.color}22;color:${e.color}" data-jt-open="${e.id}">${e.label}</div>`
+      ).join('')}
+      ${evs.length > 3 ? `<div class="jt-ev-more">+${evs.length-3} more</div>` : ''}
+    </div>`;
   }
-  return days;
+  return `<div class="jt-calendar-wrap">
+    <div class="jt-cal-nav">
+      <button id="jt-cal-prev">← PREV</button>
+      <span class="jt-cal-title">${monthName.toUpperCase()} ${year}</span>
+      <button id="jt-cal-next">NEXT →</button>
+    </div>
+    <div class="jt-cal-grid">${wdHeaders}${cells}</div>
+    <div class="jt-cal-legend">
+      <span style="color:#3b82f6">■ applied date</span>
+      <span style="color:#6366f1">■ found date</span>
+      <span style="color:#f59e0b">■ next step</span>
+    </div>
+  </div>`;
 }
 
 function renderJobs() {
   const s = jtStats();
-  const j = STATE.jobs.jobs;
-  const col = (key, title) => {
-    const items = j.filter(x=>x.stage===key);
-    return `<div class="jt-col ${key}" data-col="${key}">
-      <div class="hd"><span class="nm">${title}</span><span class="num">${items.length}</span></div>
-      <div class="jt-drop" data-drop="${key}" style="display:flex;flex-direction:column;gap:8px;flex:1;min-height:60px">
-        ${items.map(c=>`
-          <div class="jt-card" draggable="true" data-id="${c.id}">
-            <div class="co"><span>${c.company}</span><span class="pill">${c.salary || '—'}</span></div>
-            <div class="ro">${c.role}</div>
-            <div class="meta">
-              <span>${c.location||'—'}</span>
-              <span>${c.next_step ? `→ <b>${c.next_step_label||'next'}</b> ${c.next_step}` : c.source}</span>
-            </div>
-            <div class="actions">
-              <button data-jt-open="${c.id}">DETAILS</button>
-              <button data-jt-prep="${c.id}">AI PREP</button>
-            </div>
-          </div>`).join('') || '<div style="text-align:center;color:var(--ink-mute);font-size:10px;letter-spacing:.15em;padding:14px;font-style:italic">drop here</div>'}
-      </div>
-    </div>`;
-  };
-
-  const cal = jtUpcomingCal();
+  const view = STATE.jobs.view || 'kanban';
+  const viewBody = view === 'kanban' ? renderJobsKanban()
+    : view === 'table'    ? renderJobsTable()
+    : renderJobsCalendar();
   return `
-    <div class="jt-grid">
-      <div class="widget">
-        <h3>PIPELINE STATS <span class="tag">${s.total} TOTAL</span></h3>
-        <div class="jt-stats">
-          <div class="jt-stat-card"><div class="v">${s.applied + s.interview + s.offer + s.rejected}</div><div class="l">APPLIED</div><div class="delta">+${s.applied} active</div></div>
-          <div class="jt-stat-card"><div class="v">${s.respRate}%</div><div class="l">RESPONSE</div></div>
-          <div class="jt-stat-card"><div class="v">${s.intRate}%</div><div class="l">INTERVIEW RATE</div></div>
-          <div class="jt-stat-card"><div class="v">${s.offerRate}%</div><div class="l">OFFER RATE</div></div>
-          <div class="jt-stat-card"><div class="v">${s.offer}</div><div class="l">LIVE OFFERS</div><div class="delta">decide soon</div></div>
-        </div>
+    <div class="jt-wrap">
+      <div class="jt-stats-bar">
+        <div class="jt-stat-pill"><b>${s.total}</b>TOTAL</div>
+        <div class="jt-stat-pill"><b>${s.lead}</b>LEADS</div>
+        <div class="jt-stat-pill"><b>${s.applied}</b>APPLIED</div>
+        <div class="jt-stat-pill"><b>${s.interview}</b>INTERVIEW</div>
+        <div class="jt-stat-pill"><b>${s.offer}</b>OFFERS</div>
+        <div class="jt-stat-pill"><b>${s.rejected}</b>REJECTED</div>
       </div>
-
-      <div class="widget">
-        <h3>BOARD <span class="tag">DRAG TO MOVE</span></h3>
-        <div class="jt-board" id="jtBoard">
-          ${col('lead','LEAD')}
-          ${col('applied','APPLIED')}
-          ${col('interview','INTERVIEW')}
-          ${col('offer','OFFER')}
-          ${col('rejected','REJECTED')}
-        </div>
-        <div style="margin-top:12px;display:flex;justify-content:flex-end">
-          <button class="ghost-btn" id="jtNew" style="border-color:var(--c-jobs);color:var(--c-jobs)">+ ADD JOB</button>
-        </div>
+      <div class="jt-tabs">
+        <button class="jt-tab ${view==='kanban'?'active':''}" data-jt-view="kanban">KANBAN</button>
+        <button class="jt-tab ${view==='table'?'active':''}" data-jt-view="table">TABLE</button>
+        <button class="jt-tab ${view==='calendar'?'active':''}" data-jt-view="calendar">CALENDAR</button>
+        <button class="jt-tab-add" id="jtNew">+ ADD JOB</button>
       </div>
-
-      <div class="widget">
-        <h3>NEXT 7 DAYS <span class="tag">UPCOMING</span></h3>
-        <div class="jt-cal">
-          ${cal.map(d=>{
-            const day = d.d.toLocaleDateString(undefined,{weekday:'short'});
-            const dom = d.d.getDate();
-            const has = d.evs.length ? 'has' : '';
-            return `<div class="jt-cal-day ${has}">
-              <div class="d">${day} ${dom}</div>
-              ${d.evs.slice(0,2).map(e=>`<div class="ev">${e.company} · ${e.next_step_label||'event'}</div>`).join('')}
-              ${d.evs.length>2?`<div class="ev">+${d.evs.length-2}</div>`:''}
-            </div>`;
-          }).join('')}
-        </div>
-      </div>
+      <div id="jt-view-body">${viewBody}</div>
     </div>
-
-    <div class="jt-modal" id="jtModal">
-      <div class="jt-modal-card" id="jtModalCard"></div>
-    </div>
+    <div class="jt-modal" id="jtModal"><div class="jt-modal-card" id="jtModalCard"></div></div>
   `;
 }
 
 function attachJobs() {
-  // Hydrate from real SQLite DB (non-blocking); re-renders if DB has new data
-  if (!attachJobs._fetching) {
-    attachJobs._fetching = true;
-    fetch('/api/data/jobs').then(r=>r.json()).then(d=>{
-      attachJobs._fetching = false;
-      if (!Array.isArray(d.jobs) || !d.jobs.length) return;
-      const dbJobs = d.jobs.map(db=>({
-        id: 'db_' + (db.id||Math.random().toString(36).slice(2)),
-        stage: db.applied ? 'applied' : 'lead',
-        company: db.company || '—',
-        role: db.title || '—',
-        location: db.location || '—',
-        salary: '',
-        source: db.source || db.portal_type || '',
-        applied_date: db.applied_date || db.found_date || '',
-        next_step: '',
-        next_step_label: '',
-        notes: db.notes || '',
-        prep: '',
-        url: db.url || '',
-        log: [{ dt: db.found_date || new Date().toISOString().slice(0,10), msg: 'imported from jobs.db' }],
-      }));
-      const local = STATE.jobs.jobs.filter(j => !String(j.id).startsWith('db_'));
-      STATE.jobs.jobs = [...local, ...dbJobs];
-      if (panelBody) { panelBody.innerHTML = renderJobs(); attachJobs(); }
-    }).catch(()=>{ attachJobs._fetching = false; });
+  // Load from DB once per panel open; re-render with real data
+  if (!attachJobs._loading) {
+    attachJobs._loading = true;
+    loadJobsFromDB().then(() => {
+      attachJobs._loading = false;
+      if (panelBody) { panelBody.innerHTML = renderJobs(); _wireJobs(); }
+    });
+    // Wire with whatever is in STATE now while DB loads
   }
+  _wireJobs();
+}
 
-  // Drag and drop
+function _wireJobs() {
+  const view = STATE.jobs.view || 'kanban';
+
+  // --- Tab switching ---
+  panelBody.querySelectorAll('[data-jt-view]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      STATE.jobs.view = btn.dataset.jtView;
+      panelBody.innerHTML = renderJobs();
+      _wireJobs();
+    });
+  });
+
+  // --- + ADD JOB ---
+  const newBtn = document.getElementById('jtNew');
+  if (newBtn) newBtn.addEventListener('click', async () => {
+    const today = new Date().toISOString().slice(0, 10);
+    const res = await dbCreateJob({ title: '', company: '(new)', stage: 'lead', found_date: today, source: 'manual' });
+    const dbId = res?.id;
+    const job = {
+      dbId, id: 'db_' + dbId,
+      stage: 'lead', company: '(new)', role: '', location: '', salary: '',
+      contact: '', source: 'manual', portal_type: '', found_date: today,
+      applied_date: '', applied: 0, next_step: '', notes: '', url: '',
+    };
+    STATE.jobs.jobs.unshift(job);
+    panelBody.innerHTML = renderJobs();
+    _wireJobs();
+    openJobModal('db_' + dbId);
+  });
+
+  if (view === 'kanban') _wireKanban();
+  else if (view === 'table') _wireTable();
+  else _wireCalendar();
+
+  // Detail open buttons (shared across views)
+  panelBody.querySelectorAll('[data-jt-open]').forEach(b => {
+    b.addEventListener('click', e => { e.stopPropagation(); openJobModal(b.dataset.jtOpen); });
+  });
+}
+
+function _wireKanban() {
   const board = document.getElementById('jtBoard');
   if (!board) return;
   let dragId = null;
-  board.querySelectorAll('.jt-card').forEach(card=>{
-    card.addEventListener('dragstart', e=>{
+  board.querySelectorAll('.jt-card').forEach(card => {
+    card.addEventListener('dragstart', e => {
       dragId = card.dataset.id;
       card.classList.add('dragging');
       e.dataTransfer.effectAllowed = 'move';
     });
-    card.addEventListener('dragend', ()=> card.classList.remove('dragging'));
+    card.addEventListener('dragend', () => card.classList.remove('dragging'));
   });
-  board.querySelectorAll('.jt-drop').forEach(zone=>{
-    zone.addEventListener('dragover', e=>{ e.preventDefault(); zone.parentElement.classList.add('over'); });
-    zone.addEventListener('dragleave', ()=> zone.parentElement.classList.remove('over'));
-    zone.addEventListener('drop', e=>{
+  board.querySelectorAll('.jt-drop').forEach(zone => {
+    zone.addEventListener('dragover', e => { e.preventDefault(); zone.parentElement.classList.add('over'); });
+    zone.addEventListener('dragleave', () => zone.parentElement.classList.remove('over'));
+    zone.addEventListener('drop', async e => {
       e.preventDefault();
       zone.parentElement.classList.remove('over');
       if (!dragId) return;
-      const job = STATE.jobs.jobs.find(j=>j.id===dragId);
+      const job = STATE.jobs.jobs.find(j => j.id === dragId);
       if (!job) return;
       const newStage = zone.dataset.drop;
-      const oldStage = job.stage;
-      if (newStage === oldStage) return;
+      if (newStage === job.stage) return;
       job.stage = newStage;
-      job.log = job.log || [];
-      job.log.push({ dt: new Date().toISOString().slice(0,10), msg: `moved → ${newStage}` });
+      job.applied = (newStage !== 'lead') ? 1 : 0;
       toast(`${job.company} → ${newStage.toUpperCase()}`, 'ok');
-      bumpAffinity('hollis', newStage==='offer' ? +5 : +1);
-      if (newStage === 'offer') petThink(`${job.company} offer! nice, hermes.`, 'hollis');
-      panelBody.innerHTML = renderPanel('jobs');
-      attachPanelHandlers('jobs');
+      bumpAffinity('hollis', newStage === 'offer' ? +5 : +1);
+      if (newStage === 'offer') petThink(`${job.company} offer!`, 'hollis');
+      await dbSaveJob(job.dbId, { stage: newStage, applied: job.applied });
+      panelBody.innerHTML = renderJobs();
+      _wireJobs();
     });
-  });
-
-  // Details
-  panelBody.querySelectorAll('[data-jt-open]').forEach(b=>{
-    b.addEventListener('click', e=>{ e.stopPropagation(); openJobModal(b.dataset.jtOpen); });
-  });
-  // AI prep
-  panelBody.querySelectorAll('[data-jt-prep]').forEach(b=>{
-    b.addEventListener('click', e=>{ e.stopPropagation(); openJobModal(b.dataset.jtPrep, { autoPrep: true }); });
-  });
-  // New
-  const newBtn = document.getElementById('jtNew');
-  if (newBtn) newBtn.addEventListener('click', ()=>{
-    const id = 'j_' + Date.now().toString(36);
-    STATE.jobs.jobs.unshift({
-      id, stage:'lead', company:'(new)', role:'', location:'', salary:'', contact:'', source:'', applied_date:'', next_step:'', next_step_label:'', notes:'', prep:'',
-      log:[{dt:new Date().toISOString().slice(0,10), msg:'Added'}]
-    });
-    panelBody.innerHTML = renderPanel('jobs');
-    attachPanelHandlers('jobs');
-    openJobModal(id);
   });
 }
 
-function openJobModal(id, opts={}) {
-  const j = STATE.jobs.jobs.find(x=>x.id===id);
+function _wireTable() {
+  const filterInput = document.getElementById('jt-filter');
+  const stageSelect = document.getElementById('jt-filter-stage');
+  if (filterInput) filterInput.addEventListener('input', () => {
+    STATE.jobs.tableFilter = filterInput.value;
+    document.getElementById('jt-view-body').innerHTML = renderJobsTable();
+    _wireTable();
+  });
+  if (stageSelect) stageSelect.addEventListener('change', () => {
+    STATE.jobs.tableStage = stageSelect.value;
+    document.getElementById('jt-view-body').innerHTML = renderJobsTable();
+    _wireTable();
+  });
+  panelBody.querySelectorAll('.jt-table th[data-sort]').forEach(th => {
+    th.addEventListener('click', () => {
+      const key = th.dataset.sort;
+      const cur = STATE.jobs.tableSort || { key: 'company', dir: 1 };
+      STATE.jobs.tableSort = { key, dir: cur.key === key ? -cur.dir : 1 };
+      document.getElementById('jt-view-body').innerHTML = renderJobsTable();
+      _wireTable();
+    });
+  });
+}
+
+function _wireCalendar() {
+  document.getElementById('jt-cal-prev')?.addEventListener('click', () => {
+    let m = STATE.jobs.calMonth !== undefined ? STATE.jobs.calMonth : new Date().getMonth();
+    let y = STATE.jobs.calYear  !== undefined ? STATE.jobs.calYear  : new Date().getFullYear();
+    m--; if (m < 0) { m = 11; y--; }
+    STATE.jobs.calMonth = m; STATE.jobs.calYear = y;
+    document.getElementById('jt-view-body').innerHTML = renderJobsCalendar();
+    _wireCalendar();
+  });
+  document.getElementById('jt-cal-next')?.addEventListener('click', () => {
+    let m = STATE.jobs.calMonth !== undefined ? STATE.jobs.calMonth : new Date().getMonth();
+    let y = STATE.jobs.calYear  !== undefined ? STATE.jobs.calYear  : new Date().getFullYear();
+    m++; if (m > 11) { m = 0; y++; }
+    STATE.jobs.calMonth = m; STATE.jobs.calYear = y;
+    document.getElementById('jt-view-body').innerHTML = renderJobsCalendar();
+    _wireCalendar();
+  });
+  // Events open modal
+  panelBody.querySelectorAll('.jt-ev[data-jt-open]').forEach(ev => {
+    ev.addEventListener('click', e => { e.stopPropagation(); openJobModal(ev.dataset.jtOpen); });
+  });
+}
+
+function openJobModal(id, opts = {}) {
+  const j = STATE.jobs.jobs.find(x => x.id === id);
   if (!j) return;
   const modal = document.getElementById('jtModal');
-  const card = document.getElementById('jtModalCard');
+  const card  = document.getElementById('jtModalCard');
+  if (!modal || !card) return;
+
   card.innerHTML = `
     <h2 contenteditable="true" data-jt-edit="company">${j.company}</h2>
     <div class="sub" contenteditable="true" data-jt-edit="role">${j.role || 'Role'}</div>
-
     <div class="grid2">
       <div class="jt-field"><label>STAGE</label>
         <select data-jt-edit="stage">
-          ${['lead','applied','interview','offer','rejected'].map(s=>`<option value="${s}" ${s===j.stage?'selected':''}>${s.toUpperCase()}</option>`).join('')}
+          ${['lead','applied','interview','offer','rejected'].map(s =>
+            `<option value="${s}" ${s===j.stage?'selected':''}>${s.toUpperCase()}</option>`).join('')}
         </select></div>
       <div class="jt-field"><label>SALARY</label><input data-jt-edit="salary" value="${j.salary||''}"/></div>
       <div class="jt-field"><label>LOCATION</label><input data-jt-edit="location" value="${j.location||''}"/></div>
-      <div class="jt-field"><label>SOURCE</label><input data-jt-edit="source" value="${j.source||''}"/></div>
+      <div class="jt-field"><label>PORTAL / SOURCE</label><input data-jt-edit="source" value="${j.portal_type||j.source||''}"/></div>
       <div class="jt-field"><label>CONTACT</label><input data-jt-edit="contact" value="${j.contact||''}"/></div>
       <div class="jt-field"><label>APPLIED DATE</label><input type="date" data-jt-edit="applied_date" value="${j.applied_date||''}"/></div>
       <div class="jt-field"><label>NEXT STEP DATE</label><input type="date" data-jt-edit="next_step" value="${j.next_step||''}"/></div>
-      <div class="jt-field"><label>NEXT STEP LABEL</label><input data-jt-edit="next_step_label" value="${j.next_step_label||''}"/></div>
+      <div class="jt-field"><label>FOUND DATE</label><input type="date" data-jt-edit="found_date" value="${j.found_date||''}"/></div>
     </div>
-
+    ${j.url ? `<div class="jt-field" style="margin-bottom:10px"><label>URL</label><a href="${j.url}" target="_blank" style="color:var(--c-jobs);font-size:11px;word-break:break-all">${j.url}</a></div>` : ''}
     <div class="jt-field" style="margin-bottom:14px"><label>NOTES</label>
-      <textarea data-jt-edit="notes" placeholder="Any context, prep angles, who to mention...">${j.notes||''}</textarea>
+      <textarea data-jt-edit="notes" placeholder="context, angles, contacts…">${j.notes||''}</textarea>
     </div>
-
-    <div class="jt-field" style="margin-bottom:14px">
-      <label>CONTACT LOG · ${j.log?.length || 0} entries</label>
-      <div class="jt-contact-log" id="jtLog">
-        ${(j.log||[]).slice().reverse().map(l=>`<div class="line"><span class="dt">${l.dt}</span>${l.msg}</div>`).join('') || '<div class="line" style="color:var(--ink-mute);font-style:italic">no entries</div>'}
-      </div>
-      <div style="display:flex;gap:6px;margin-top:6px">
-        <input id="jtNewLog" placeholder="add log entry…" style="flex:1;background:var(--bg-2);border:1px solid var(--line-2);color:var(--ink);border-radius:6px;padding:6px 8px;font-family:inherit;font-size:11px"/>
-        <button class="ghost-btn" id="jtAddLog">+</button>
-      </div>
-    </div>
-
     <div class="jt-field">
-      <label>AI INTERVIEW PREP (from hollis) · ${j.prep ? 'cached' : 'not yet generated'}</label>
-      <div class="jt-prep-box ${j.prep?'':'loading'}" id="jtPrep">${j.prep || 'click "GENERATE PREP" to draft talking points + likely questions for this role.'}</div>
+      <label>AI INTERVIEW PREP · <span id="jtPrepStatus">${j.prep ? 'cached' : 'not generated'}</span></label>
+      <div class="jt-prep-box ${j.prep?'':'loading'}" id="jtPrep">${j.prep || 'click GENERATE PREP to draft questions + talking points for this role.'}</div>
     </div>
-
     <div class="row-actions">
       <button class="ai-btn" id="jtGenPrep">✦ GENERATE PREP</button>
       <button class="ghost-btn" id="jtDel" style="color:#ef4444;border-color:#ef4444">DELETE</button>
@@ -3393,80 +3679,75 @@ function openJobModal(id, opts={}) {
   `;
   modal.classList.add('open');
 
-  // wire up
-  card.querySelectorAll('[data-jt-edit]').forEach(el=>{
+  // Debounced DB save on every field edit
+  let saveTimer;
+  const scheduleSave = () => {
+    clearTimeout(saveTimer);
+    saveTimer = setTimeout(() => {
+      dbSaveJob(j.dbId, {
+        company: j.company, title: j.role, location: j.location,
+        salary: j.salary, contact: j.contact,
+        applied_date: j.applied_date, next_step: j.next_step,
+        found_date: j.found_date, notes: j.notes,
+        stage: j.stage, applied: j.applied,
+        source: j.portal_type || j.source,
+      });
+    }, 800);
+  };
+
+  card.querySelectorAll('[data-jt-edit]').forEach(el => {
     const key = el.dataset.jtEdit;
-    const handler = ()=>{
-      let v = el.tagName === 'INPUT' || el.tagName === 'SELECT' || el.tagName === 'TEXTAREA' ? el.value : el.textContent;
+    const handler = () => {
+      const v = (el.tagName === 'INPUT' || el.tagName === 'SELECT' || el.tagName === 'TEXTAREA') ? el.value : el.textContent.trim();
       j[key] = v;
+      if (key === 'stage') j.applied = (v !== 'lead') ? 1 : 0;
+      scheduleSave();
     };
-    if (el.tagName === 'INPUT' || el.tagName === 'SELECT' || el.tagName === 'TEXTAREA') el.addEventListener('input', handler);
+    if (el.tagName === 'INPUT' || el.tagName === 'SELECT' || el.tagName === 'TEXTAREA') el.addEventListener('change', handler);
     else el.addEventListener('blur', handler);
   });
-  card.querySelector('#jtAddLog').addEventListener('click', ()=>{
-    const input = card.querySelector('#jtNewLog');
-    const v = input.value.trim();
-    if (!v) return;
-    j.log = j.log || [];
-    j.log.push({ dt: new Date().toISOString().slice(0,10), msg: v });
-    input.value = '';
-    openJobModal(id); // re-render modal
-  });
-  card.querySelector('#jtGenPrep').addEventListener('click', async ()=>{
+
+  card.querySelector('#jtGenPrep').addEventListener('click', async () => {
     const box = card.querySelector('#jtPrep');
     box.classList.add('loading');
-    box.textContent = 'hollis is drafting your prep…';
+    box.textContent = 'hollis is drafting prep…';
     bumpAffinity('hollis', +3);
     try {
-      const reply = await window.claude.complete(
-        `You are Hollis, Hermes's career mentor. Hermes has an upcoming interview with the company below.
-Write tight interview prep in this exact structure (markdown headings, terse bullets):
-
-## Likely questions
-- 4-6 questions specific to this role + company.
-
-## Talking points
-- 4-6 short angles Hermes should weave in (his strengths, project hooks).
-
-## What to ask them
-- 3-4 sharp questions back.
-
-## Salary anchor
-- 1-2 sentences on what to anchor at given the stage/level.
-
-Be specific to this company. Lowercase, no fluff.
-
-Company: ${j.company}
-Role: ${j.role}
-Location: ${j.location}
-Salary: ${j.salary}
-Stage: ${j.stage}
-Notes from Hermes: ${j.notes || '(none)'}
-Contact log: ${(j.log||[]).map(l=>l.dt+' '+l.msg).join(' | ')}`);
+      const reply = await hermesChat('hollis',
+        `Draft tight interview prep for this role:\n\nCompany: ${j.company}\nRole: ${j.role}\nLocation: ${j.location}\nSalary: ${j.salary}\nStage: ${j.stage}\nNotes: ${j.notes || '(none)'}`,
+        AGENTS.hollis.persona);
       j.prep = (reply || '').trim();
       box.classList.remove('loading');
       box.textContent = j.prep;
-      toast('prep ready ✓','ok');
+      toast('prep ready ✓', 'ok');
     } catch(e) {
       box.classList.remove('loading');
-      box.textContent = 'could not generate prep right now.';
+      box.textContent = 'could not generate prep — is Hermes running?';
     }
   });
-  if (opts.autoPrep && !j.prep) card.querySelector('#jtGenPrep').click();
 
-  card.querySelector('#jtClose').addEventListener('click', ()=>{
+  card.querySelector('#jtClose').addEventListener('click', () => {
     modal.classList.remove('open');
-    panelBody.innerHTML = renderPanel('jobs');
-    attachPanelHandlers('jobs');
+    panelBody.innerHTML = renderJobs();
+    _wireJobs();
   });
-  card.querySelector('#jtDel').addEventListener('click', ()=>{
-    if (!confirm('Delete '+j.company+'?')) return;
-    STATE.jobs.jobs = STATE.jobs.jobs.filter(x=>x.id !== id);
+
+  card.querySelector('#jtDel').addEventListener('click', async () => {
+    if (!confirm(`Delete ${j.company}?`)) return;
+    await dbDeleteJob(j.dbId);
+    STATE.jobs.jobs = STATE.jobs.jobs.filter(x => x.id !== id);
     modal.classList.remove('open');
-    panelBody.innerHTML = renderPanel('jobs');
-    attachPanelHandlers('jobs');
+    panelBody.innerHTML = renderJobs();
+    _wireJobs();
   });
-  modal.addEventListener('click', e=>{ if (e.target === modal) { modal.classList.remove('open'); panelBody.innerHTML = renderPanel('jobs'); attachPanelHandlers('jobs'); } }, { once:true });
+
+  modal.addEventListener('click', e => {
+    if (e.target === modal) {
+      modal.classList.remove('open');
+      panelBody.innerHTML = renderJobs();
+      _wireJobs();
+    }
+  }, { once: true });
 }
 
 /* --- old renderJobs replaced; legacy removed --- */

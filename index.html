@@ -2941,14 +2941,38 @@ function agentRowHTML(panelId) {
       <div class="aff-lbl"><span>♥ AFFINITY</span><b>${aff}/100</b></div>
       <div class="aff-bar"><i style="width:${aff}%"></i></div>
     </div>
-    <div style="display:flex;gap:8px">
-      <button class="chat" data-agent-chat="${id}">💬 CHAT</button>
-      <button class="call ${live}" data-agent-call="${id}">📞 ${live?'END':'CALL'}</button>
+    <div style="display:flex;flex-direction:column;gap:6px;align-items:flex-end">
+      <div id="hermes-row-status-${id}" style="font-size:10px;letter-spacing:.1em;color:var(--ink-mute)">● checking hermes…</div>
+      <div style="display:flex;gap:8px">
+        <button class="chat" data-agent-chat="${id}">💬 CHAT</button>
+        <button class="call ${live}" data-agent-call="${id}">📞 ${live?'END':'CALL'}</button>
+      </div>
     </div>
   </div>`;
 }
 
 function attachAgentRow() {
+  // Check Hermes status and show per-agent connection indicator
+  fetch('/api/hermes/status').then(r=>r.json()).then(s=>{
+    panelBody.querySelectorAll('[id^="hermes-row-status-"]').forEach(el=>{
+      const agId = el.id.replace('hermes-row-status-','');
+      if (s.online) {
+        el.textContent = '● connected to hermes';
+        el.style.color = 'var(--c-startup)';
+        el.title = `Session: familyhub-${agId}`;
+      } else {
+        el.textContent = '● hermes offline';
+        el.style.color = '#ef4444';
+        el.title = s.error || 'Hermes not reachable at localhost:3000';
+      }
+    });
+  }).catch(()=>{
+    panelBody.querySelectorAll('[id^="hermes-row-status-"]').forEach(el=>{
+      el.textContent = '● hermes offline';
+      el.style.color = '#ef4444';
+    });
+  });
+
   panelBody.querySelectorAll('[data-agent-call]').forEach(b=>{
     b.addEventListener('click', ()=>{
       const id = b.dataset.agentCall;
@@ -3007,73 +3031,36 @@ function renderPanel(id) {
 
 /* --- LIFE OS --- */
 function renderLife() {
-  const events = [
-    {t:'09:00', l:'Standup',         m:'15 min · Meet'},
-    {t:'11:30', l:'Investor call',   m:'Anya / Series-Seed'},
-    {t:'16:00', l:'Storybook record',m:'Ch.3 · narration'},
-  ];
-  const emails = [
-    {f:'recruiter@stripe.com', s:'Re: Design Engineer onsite', m:'2h'},
-    {f:'anya@northstarvc.com', s:'Quick follow-up after call', m:'4h'},
-    {f:'github',               s:'PR #482 ready for review',   m:'5h'},
-    {f:'godotengine.org',      s:'4.4 release notes',          m:'1d'},
-    {f:'amazon',               s:'Order shipped: GH60 board',  m:'1d'},
-  ];
-  const todos = STATE.todos;
+  const todos = STATE.life?.todos || STATE.todos || [];
   return `
     <div class="panel-grid lifeos-grid">
       <div class="widget">
-        <h3>TODAY <span class="tag">3 EVENTS</span></h3>
-        <div class="cal">
-          ${events.map(e=>`
-            <div class="cal-day">
-              <div class="t">${e.t}</div>
-              <div class="lbl">${e.l}<small>${e.m}</small></div>
-            </div>`).join('')}
-        </div>
+        <h3>SCHEDULE <span class="tag" id="life-date-tag">loading…</span></h3>
+        <div id="life-calendar" style="color:var(--ink-mute);font-size:11px;font-style:italic">loading from obsidian…</div>
       </div>
       <div class="widget">
-        <h3>INBOX <span class="tag">10 UNREAD</span></h3>
-        <div class="row-list">
-          ${emails.map(m=>`
-            <div class="row">
-              <span class="pin"></span>
-              <div>
-                <div style="color:var(--ink);font-size:12px">${m.s}</div>
-                <div class="meta">${m.f}</div>
-              </div>
-              <div class="meta">${m.m}</div>
-            </div>`).join('')}
+        <h3>INBOX <span class="tag" id="life-inbox-tag">EMAIL</span></h3>
+        <div id="life-inbox">
+          <div style="display:grid;gap:8px">
+            <button class="open-btn" id="life-load-email" style="padding:10px 14px;font-size:11px">📧 LOAD EMAILS VIA IRIS</button>
+            <div id="life-email-list" style="display:none"></div>
+          </div>
         </div>
       </div>
       <div class="widget" style="display:grid;gap:14px">
         <div>
-          <h3>WEATHER <span class="tag">SF</span></h3>
-          <div class="weather">
-            <div class="big">⛅</div>
-            <div>
-              <div class="deg">62°</div>
-              <div class="where">SAN FRANCISCO</div>
-              <div class="desc">Partly cloudy · low fog tonight</div>
-            </div>
-          </div>
-        </div>
-        <div>
-          <h3>BUDGET <span class="tag">DAILY</span></h3>
-          <div class="budget-bar">
-            <div class="bar-track"><div class="bar-fill" style="width:14%"></div></div>
-            <div class="budget-line"><span>spent <b>$2.02</b></span><span>budget <b>$15.00</b></span></div>
-          </div>
-        </div>
-        <div>
           <h3>TODOS <span class="tag" id="todoCount">${todos.filter(t=>!t.done).length} OPEN</span></h3>
           <div class="row-list" id="todoList">
-            ${todos.map(t=>`
-              <label class="todo ${t.done?'done':''}" data-todo="${t.id}">
+            ${todos.length ? todos.map((t,i)=>`
+              <label class="todo ${t.done?'done':''}" data-todo="${t.id||i}">
                 <input type="checkbox" ${t.done?'checked':''} />
                 <span class="lbl">${t.text}</span>
-              </label>`).join('')}
+              </label>`).join('') : '<div style="color:var(--ink-mute);font-size:11px;font-style:italic" id="todos-loading">loading from obsidian…</div>'}
           </div>
+        </div>
+        <div>
+          <h3>DAILY NOTE <span class="tag" id="life-note-tag">TODAY</span></h3>
+          <div id="life-note" style="font-size:11px;color:var(--ink-dim);line-height:1.5;max-height:180px;overflow:auto;white-space:pre-wrap">loading…</div>
         </div>
       </div>
     </div>
@@ -3082,71 +3069,31 @@ function renderLife() {
 
 /* --- GAME DEV --- */
 function renderGame() {
-  const scripts = [
-    {n:'player_controller.gd', l:332, st:'stable'},
-    {n:'enemy_ai.gd',          l:188, st:'wip'},
-    {n:'inventory.gd',         l:241, st:'stable'},
-    {n:'weapon_system.gd',     l:476, st:'stable'},
-    {n:'level_streamer.gd',    l:152, st:'wip'},
-  ];
-  const scenes = [
-    {n:'level_01_glass_forest', p:90},
-    {n:'level_02_salt_flats',   p:65},
-    {n:'level_03_bell_tower',   p:38},
-    {n:'level_04_sky_train',    p:12},
-  ];
-  const bugs = [
-    {t:'Inventory drag drops null on stack-of-1', sev:'high', fixed:false, id:'#481'},
-    {t:'Bell tower sound loops in pause menu',     sev:'med',  fixed:false, id:'#479'},
-    {t:'AI pathfinding stutters on slope > 35°',   sev:'med',  fixed:false, id:'#477'},
-    {t:'Crouch state desync after reload',         sev:'high', fixed:true,  id:'#472'},
-    {t:'Ammo HUD font kerning',                    sev:'low',  fixed:true,  id:'#468'},
-    {t:'Damage numbers cull behind fog wall',      sev:'low',  fixed:true,  id:'#465'},
-    {t:'Save slot 2 corrupts on quick-load',       sev:'high', fixed:true,  id:'#460'},
-  ];
   return `
     <div class="panel-grid gd-grid">
       <div class="widget">
-        <h3>BUILD STATUS <span class="tag">GODOT 4.4</span></h3>
-        <div class="progress-ring">
-          <div class="ring" style="--p:60"><span>60%</span></div>
-          <div class="legend">
-            <b>FPS PROTO // VERTICAL SLICE</b>
-            <div>Branch: <span style="color:var(--ink)">main</span></div>
-            <div>Last build: <span style="color:var(--ink)">9 min ago · OK</span></div>
-            <div>Tests: <span style="color:var(--c-startup)">142 / 142 ✓</span></div>
-          </div>
+        <h3>PROJECT <span class="tag" id="gd-project-tag">loading…</span></h3>
+        <div style="display:flex;gap:8px;align-items:center;margin-bottom:12px">
+          <select id="gd-project-sel" style="background:var(--bg-2);border:1px solid var(--line-2);color:var(--ink);border-radius:6px;padding:6px 10px;font-family:inherit;font-size:11px;flex:1">
+            <option value="">loading projects…</option>
+          </select>
+          <button class="open-btn" id="gd-open-obs" style="padding:6px 12px;font-size:10px;white-space:nowrap">📁 OBSIDIAN</button>
         </div>
-        <h3 style="margin-top:18px">SCENES <span class="tag">${scenes.length}</span></h3>
-        <div class="mini-bar">
-          ${scenes.map(s=>`
-            <div class="mb-row">
-              <div class="lbl">${s.n}</div>
-              <div class="mb-track"><div class="mb-fill" style="width:${s.p}%"></div></div>
-              <div class="val">${s.p}%</div>
-            </div>`).join('')}
+        <div id="gd-spec" style="font-size:11px;color:var(--ink-dim);line-height:1.5;max-height:260px;overflow:auto;white-space:pre-wrap;background:var(--bg-2);border:1px solid var(--line);border-radius:8px;padding:10px">select a project above</div>
+        <div id="gd-tasks-block" style="margin-top:14px;display:none">
+          <h3>OPEN TASKS <span class="tag" id="gd-task-count"></span></h3>
+          <div id="gd-tasks" class="row-list" style="max-height:180px;overflow:auto"></div>
         </div>
       </div>
       <div class="widget">
-        <h3>BUG BOARD <span class="tag">${bugs.filter(b=>!b.fixed).length} OPEN</span></h3>
-        <div class="row-list bug-list">
-          ${bugs.map(b=>`
-            <div class="row ${b.fixed?'fixed':''}">
-              <span class="sev ${b.sev}">${b.sev.toUpperCase()}</span>
-              <div class="lbl" style="color:var(--ink);font-size:12px">${b.t}<div class="meta">${b.id}</div></div>
-              <div class="meta">${b.fixed?'FIXED':'OPEN'}</div>
-              <button class="ghost-btn" data-bug="${b.id}" style="padding:4px 8px;font-size:10px">${b.fixed?'REOPEN':'FIX'}</button>
-            </div>`).join('')}
+        <h3>ASK REN <span class="tag">GAME DEV AI</span></h3>
+        <div style="display:grid;gap:8px">
+          <textarea id="gd-ask" style="background:var(--bg-2);border:1px solid var(--line-2);color:var(--ink);border-radius:8px;padding:10px;font-family:inherit;font-size:12px;resize:vertical;min-height:80px;width:100%;box-sizing:border-box" placeholder="Ask Ren about the current project — bugs, architecture, next steps…"></textarea>
+          <button class="open-btn" id="gd-ask-btn" style="padding:10px;font-size:11px">ASK REN →</button>
+          <div id="gd-ren-reply" style="display:none;background:var(--bg-2);border:1px solid var(--line);border-radius:8px;padding:12px;font-size:12px;color:var(--ink);white-space:pre-wrap;max-height:300px;overflow:auto;line-height:1.55"></div>
         </div>
-        <h3 style="margin-top:18px">SCRIPTS <span class="tag">${scripts.length}</span></h3>
-        <div class="row-list">
-          ${scripts.map(s=>`
-            <div class="row">
-              <span class="pin"></span>
-              <div style="color:var(--ink);font-size:12px">${s.n}<div class="meta">${s.l} lines</div></div>
-              <span class="sev ${s.st==='wip'?'med':'low'}">${s.st.toUpperCase()}</span>
-            </div>`).join('')}
-        </div>
+        <h3 style="margin-top:18px">FILES <span class="tag" id="gd-files-tag"></span></h3>
+        <div id="gd-files" class="row-list" style="max-height:200px;overflow:auto;gap:4px"></div>
       </div>
     </div>
   `;
@@ -3154,62 +3101,27 @@ function renderGame() {
 
 /* --- STARTUP --- */
 function renderStartup() {
-  const investors = [
-    { n:'North Star VC',    s:'Soft commit',    a:'$1.2M' },
-    { n:'Anya Personal',    s:'Term sheet',     a:'$250k' },
-    { n:'Alpine Seed',      s:'In diligence',   a:'$500k' },
-    { n:'Local Angels',     s:'Intro',          a:'$150k' },
-    { n:'Founder Friends',  s:'Closed',         a:'$300k' },
-  ];
-  const coaching = [
-    { d:'May 02', t:'Pitch tightening', c:'Sam K.' },
-    { d:'Apr 28', t:'Pricing model',    c:'Devi R.' },
-    { d:'Apr 21', t:'Hiring plan',      c:'Sam K.' },
-  ];
   return `
     <div class="panel-grid stp-grid">
       <div class="widget">
-        <h3>NORTH STAR <span class="tag">MINC</span></h3>
-        <div class="kpi">
-          <div class="k"><div class="v">60%</div><div class="l">MVP</div><div class="delta">+8 this wk</div></div>
-          <div class="k"><div class="v">12</div><div class="l">INVESTORS</div><div class="delta">+3</div></div>
-          <div class="k"><div class="v">$2.4M</div><div class="l">SOFT</div><div class="delta">+$700k</div></div>
-        </div>
-        <h3 style="margin-top:18px">FUNDRAISE FUNNEL</h3>
-        <div class="funnel">
-          ${[
-            {l:'Intro',    p:100, n:42},
-            {l:'1st call', p:64,  n:27},
-            {l:'Diligence',p:33,  n:14},
-            {l:'Soft yes', p:28,  n:12},
-            {l:'Term sheet',p:7,  n:3 },
-          ].map(f=>`
-            <div class="fstage">
-              <div class="lbl" style="color:var(--ink-dim);font-size:11px;letter-spacing:.12em">${f.l}</div>
-              <div class="ftrack"><div class="ffill" style="width:${f.p}%">${f.p}%</div></div>
-              <div class="val" style="color:var(--ink);font-size:11px;text-align:right">${f.n}</div>
-            </div>`).join('')}
+        <h3>BUIZZNETHUB <span class="tag" id="stp-tag">loading…</span></h3>
+        <div id="stp-overview" style="font-size:12px;color:var(--ink-dim);line-height:1.6;max-height:200px;overflow:auto;white-space:pre-wrap">loading from obsidian…</div>
+        <h3 style="margin-top:16px">ROADMAP <span class="tag" id="stp-roadmap-tag"></span></h3>
+        <div id="stp-roadmap" style="font-size:11px;color:var(--ink-dim);line-height:1.5;max-height:200px;overflow:auto;white-space:pre-wrap">loading…</div>
+        <div style="margin-top:12px;display:flex;gap:8px">
+          <button class="open-btn" id="stp-open-obs" style="padding:8px 12px;font-size:10px">📁 OPEN IN OBSIDIAN</button>
+          <button class="open-btn" id="stp-reload" style="padding:8px 12px;font-size:10px">⟳ RELOAD</button>
         </div>
       </div>
       <div class="widget">
-        <h3>INVESTOR TRACKER <span class="tag">12</span></h3>
-        <div class="row-list">
-          ${investors.map(i=>`
-            <div class="row">
-              <span class="pin"></span>
-              <div style="color:var(--ink);font-size:12px">${i.n}<div class="meta">${i.s}</div></div>
-              <div style="color:var(--c-startup);font-weight:700">${i.a}</div>
-            </div>`).join('')}
+        <h3>ASK MIRA <span class="tag">CO-FOUNDER AI</span></h3>
+        <div style="display:grid;gap:8px">
+          <textarea id="stp-ask" style="background:var(--bg-2);border:1px solid var(--line-2);color:var(--ink);border-radius:8px;padding:10px;font-family:inherit;font-size:12px;resize:vertical;min-height:80px;width:100%;box-sizing:border-box" placeholder="Ask Mira — investor strategy, roadmap, pitch, pricing…"></textarea>
+          <button class="open-btn" id="stp-ask-btn" style="padding:10px;font-size:11px">ASK MIRA →</button>
+          <div id="stp-mira-reply" style="display:none;background:var(--bg-2);border:1px solid var(--line);border-radius:8px;padding:12px;font-size:12px;color:var(--ink);white-space:pre-wrap;max-height:260px;overflow:auto;line-height:1.55"></div>
         </div>
-        <h3 style="margin-top:18px">COACHING LOG <span class="tag">3</span></h3>
-        <div class="row-list">
-          ${coaching.map(c=>`
-            <div class="row">
-              <span class="pin"></span>
-              <div style="color:var(--ink);font-size:12px">${c.t}<div class="meta">${c.c}</div></div>
-              <div class="meta">${c.d}</div>
-            </div>`).join('')}
-        </div>
+        <h3 style="margin-top:18px">INVESTOR OUTREACH <span class="tag" id="stp-inv-tag"></span></h3>
+        <div id="stp-investors" style="font-size:11px;color:var(--ink-dim);line-height:1.5;max-height:200px;overflow:auto;white-space:pre-wrap">loading…</div>
       </div>
     </div>
   `;
@@ -3345,6 +3257,34 @@ function renderJobs() {
 }
 
 function attachJobs() {
+  // Hydrate from real SQLite DB (non-blocking); re-renders if DB has new data
+  if (!attachJobs._fetching) {
+    attachJobs._fetching = true;
+    fetch('/api/data/jobs').then(r=>r.json()).then(d=>{
+      attachJobs._fetching = false;
+      if (!Array.isArray(d.jobs) || !d.jobs.length) return;
+      const dbJobs = d.jobs.map(db=>({
+        id: 'db_' + (db.id||Math.random().toString(36).slice(2)),
+        stage: db.applied ? 'applied' : 'lead',
+        company: db.company || '—',
+        role: db.title || '—',
+        location: db.location || '—',
+        salary: '',
+        source: db.source || db.portal_type || '',
+        applied_date: db.applied_date || db.found_date || '',
+        next_step: '',
+        next_step_label: '',
+        notes: db.notes || '',
+        prep: '',
+        url: db.url || '',
+        log: [{ dt: db.found_date || new Date().toISOString().slice(0,10), msg: 'imported from jobs.db' }],
+      }));
+      const local = STATE.jobs.jobs.filter(j => !String(j.id).startsWith('db_'));
+      STATE.jobs.jobs = [...local, ...dbJobs];
+      if (panelBody) { panelBody.innerHTML = renderJobs(); attachJobs(); }
+    }).catch(()=>{ attachJobs._fetching = false; });
+  }
+
   // Drag and drop
   const board = document.getElementById('jtBoard');
   if (!board) return;
@@ -3878,35 +3818,198 @@ function attachPanelHandlers(id) {
   if (id === 'workout') attachWorkout();
   if (id === 'stocks') attachStocks();
   if (id === 'claw') attachClaw();
+  if (id === 'startup') attachStartup();
+  if (id === 'jobs') attachJobs();
 }
 
 function attachLife() {
-  const list = document.getElementById('todoList');
-  if (!list) return;
-  list.querySelectorAll('.todo').forEach(label=>{
-    label.addEventListener('change', e=>{
-      const id = label.dataset.todo;
-      const t = STATE.todos.find(x=>x.id===id);
-      t.done = e.target.checked;
-      label.classList.toggle('done', t.done);
-      document.getElementById('todoCount').textContent = `${STATE.todos.filter(t=>!t.done).length} OPEN`;
-      petThink(t.done?'good job!':'back to it.');
-      petBump('fun', t.done?+6:-2);
+  // Load real data from Obsidian vault
+  fetch('/api/data/lifetoday')
+    .then(r => r.json())
+    .then(data => {
+      const dateTag = document.getElementById('life-date-tag');
+      const cal = document.getElementById('life-calendar');
+      const note = document.getElementById('life-note');
+      const list = document.getElementById('todoList');
+      const count = document.getElementById('todoCount');
+      if (dateTag) dateTag.textContent = data.date || '';
+      if (cal) cal.textContent = data.calendar || '(no Calendar.md — create ~/Documents/Obsidian/Life/Calendar.md)';
+      if (note) note.textContent = data.dailyNote || '(no daily note for today — create one at Daily/' + (data.date||'') + '.md)';
+      const todos = data.todos || [];
+      if (list) {
+        list.innerHTML = todos.length
+          ? todos.map((t,i) => `
+              <label class="todo ${t.done?'done':''}" style="cursor:pointer" data-todo="${i}">
+                <input type="checkbox" ${t.done?'checked':''} />
+                <span class="lbl">${t.text}</span>
+              </label>`).join('')
+          : '<div style="color:var(--ink-mute);font-size:11px;font-style:italic">no tasks in today\'s daily note</div>';
+        if (count) count.textContent = `${todos.filter(t=>!t.done).length} OPEN`;
+        list.querySelectorAll('.todo').forEach((label, i) => {
+          label.addEventListener('change', e => {
+            todos[i].done = e.target.checked;
+            label.classList.toggle('done', todos[i].done);
+            if (count) count.textContent = `${todos.filter(t=>!t.done).length} OPEN`;
+            petThink(todos[i].done ? 'good job!' : 'back to it.');
+            petBump('fun', todos[i].done ? +6 : -2);
+          });
+        });
+      }
+    })
+    .catch(() => {
+      const cal = document.getElementById('life-calendar');
+      if (cal) cal.textContent = 'failed to connect to Obsidian vault';
     });
+
+  // Wire "Load Emails via Iris" button
+  const emailBtn = document.getElementById('life-load-email');
+  const emailList = document.getElementById('life-email-list');
+  if (emailBtn) emailBtn.addEventListener('click', async () => {
+    emailBtn.textContent = '⏳ ASKING IRIS…';
+    emailBtn.disabled = true;
+    if (emailList) { emailList.style.display = 'block'; emailList.textContent = 'loading…'; }
+    try {
+      const reply = await hermesChat('iris',
+        'Check my inbox and summarize the most important unread emails today. Be concise — bullet points.',
+        AGENTS.iris.persona + '\nYou are Iris, Life OS assistant.');
+      if (emailList) emailList.textContent = reply || '(no reply from Iris)';
+    } catch(e) {
+      if (emailList) emailList.textContent = 'Iris unavailable — is Hermes running?';
+    }
+    emailBtn.textContent = '📧 REFRESH';
+    emailBtn.disabled = false;
   });
 }
 
 function attachGame() {
-  panelBody.querySelectorAll('[data-bug]').forEach(btn=>{
-    btn.addEventListener('click', ()=>{
-      const row = btn.closest('.row');
-      const fixed = row.classList.toggle('fixed');
-      btn.textContent = fixed?'REOPEN':'FIX';
-      row.querySelector('.meta:nth-of-type(1)') && (row.querySelectorAll('.meta')[1].textContent = fixed?'FIXED':'OPEN');
-      toast(fixed?'bug squashed':'bug reopened', fixed?'ok':'warn');
-      petBump('fun', fixed?+8:-3);
+  const sel = document.getElementById('gd-project-sel');
+  if (!sel) return;
+  let currentProject = null;
+
+  function loadProjectDetail(p) {
+    currentProject = p;
+    const projectTag = document.getElementById('gd-project-tag');
+    const spec = document.getElementById('gd-spec');
+    const taskBlock = document.getElementById('gd-tasks-block');
+    const taskCount = document.getElementById('gd-task-count');
+    const tasks = document.getElementById('gd-tasks');
+    const filesTag = document.getElementById('gd-files-tag');
+    const files = document.getElementById('gd-files');
+    if (projectTag) projectTag.textContent = p.name.toUpperCase();
+    if (spec) spec.textContent = p.spec || p.plan || '(no SPEC.md or README.md — add one to Projects/' + p.id + '/)';
+    fetch(`/api/data/gameproject?id=${encodeURIComponent(p.id)}`)
+      .then(r => r.json())
+      .then(detail => {
+        if (filesTag) filesTag.textContent = `${detail.files.length} FILES`;
+        if (files) files.innerHTML = detail.files.map(f =>
+          `<div class="row" style="font-size:11px;color:var(--ink-dim);padding:4px 0">${f.name}</div>`
+        ).join('') || '<div style="color:var(--ink-mute);font-size:11px">no files</div>';
+        const allContent = detail.files.map(f => f.content).join('\n');
+        const openTasks = (allContent.match(/^- \[ \] .+/gm) || []).map(l => l.replace(/^- \[ \] /, ''));
+        if (taskBlock) taskBlock.style.display = openTasks.length ? '' : 'none';
+        if (taskCount) taskCount.textContent = `${openTasks.length} OPEN`;
+        if (tasks) tasks.innerHTML = openTasks.slice(0, 20).map(t =>
+          `<div class="row" style="font-size:11px;padding:3px 0">☐ ${t}</div>`
+        ).join('');
+      })
+      .catch(() => { if (files) files.innerHTML = '<div style="color:var(--ink-mute);font-size:11px">failed to load files</div>'; });
+  }
+
+  fetch('/api/data/gameprojects')
+    .then(r => r.json())
+    .then(projects => {
+      sel.innerHTML = '<option value="">— pick a project —</option>' +
+        projects.map(p => `<option value="${p.id}">${p.name}  ·  ${p.openTasks} tasks open</option>`).join('');
+      if (projects.length) loadProjectDetail(projects[0]);
+    })
+    .catch(() => { sel.innerHTML = '<option>error loading projects from Obsidian</option>'; });
+
+  sel.addEventListener('change', () => {
+    const id = sel.value;
+    if (!id) return;
+    fetch('/api/data/gameprojects').then(r => r.json()).then(ps => {
+      const p = ps.find(x => x.id === id);
+      if (p) loadProjectDetail(p);
     });
   });
+
+  const obsBtn = document.getElementById('gd-open-obs');
+  if (obsBtn) obsBtn.addEventListener('click', () => {
+    if (currentProject) window.open(`obsidian://open?vault=Obsidian&file=Projects%2F${currentProject.id}`, '_blank');
+    else toast('select a project first', 'warn');
+  });
+
+  const askBtn = document.getElementById('gd-ask-btn');
+  const askTa = document.getElementById('gd-ask');
+  const renReply = document.getElementById('gd-ren-reply');
+  if (askBtn && askTa) {
+    askBtn.addEventListener('click', async () => {
+      const q = askTa.value.trim();
+      if (!q) { toast('type a question first', 'warn'); return; }
+      askBtn.disabled = true;
+      askBtn.textContent = 'asking ren…';
+      if (renReply) { renReply.style.display = 'block'; renReply.textContent = '…'; }
+      const ctx = currentProject
+        ? `Current project: ${currentProject.name}\n${(currentProject.spec || '').slice(0, 500)}`
+        : 'No project selected.';
+      try {
+        const reply = await hermesChat('ren', q, AGENTS.ren.persona + '\n' + ctx);
+        if (renReply) renReply.textContent = reply || '(no reply)';
+      } catch(e) {
+        if (renReply) renReply.textContent = 'Ren unavailable — is Hermes running?';
+      }
+      askBtn.disabled = false;
+      askBtn.textContent = 'ASK REN →';
+    });
+    askTa.addEventListener('keydown', e => { if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) askBtn.click(); });
+  }
+}
+
+function attachStartup() {
+  fetch('/api/data/startup')
+    .then(r => r.json())
+    .then(data => {
+      const overview = document.getElementById('stp-overview');
+      const roadmap = document.getElementById('stp-roadmap');
+      const investors = document.getElementById('stp-investors');
+      const tag = document.getElementById('stp-tag');
+      const invTag = document.getElementById('stp-inv-tag');
+      if (overview) overview.textContent = data.readme || data.business || '(no README.md in Projects/Buizznethub/)';
+      if (roadmap) roadmap.textContent = data.roadmap || '(no ROADMAP.md found)';
+      if (investors) investors.textContent = data.investor || '(no investor-outreach file found)';
+      if (tag) tag.textContent = 'LIVE';
+      if (invTag && data.investor) invTag.textContent = 'FROM OBSIDIAN';
+    })
+    .catch(() => {
+      const overview = document.getElementById('stp-overview');
+      if (overview) overview.textContent = 'failed to load from Obsidian vault';
+    });
+
+  document.getElementById('stp-open-obs')?.addEventListener('click', () =>
+    window.open('obsidian://open?vault=Obsidian&file=Projects%2FBuizznethub', '_blank'));
+  document.getElementById('stp-reload')?.addEventListener('click', () => attachStartup());
+
+  const askBtn = document.getElementById('stp-ask-btn');
+  const askTa = document.getElementById('stp-ask');
+  const miraReply = document.getElementById('stp-mira-reply');
+  if (askBtn && askTa) {
+    askBtn.addEventListener('click', async () => {
+      const q = askTa.value.trim();
+      if (!q) { toast('type a question first', 'warn'); return; }
+      askBtn.disabled = true;
+      askBtn.textContent = 'asking mira…';
+      if (miraReply) { miraReply.style.display = 'block'; miraReply.textContent = '…'; }
+      try {
+        const reply = await hermesChat('mira', q, AGENTS.mira.persona);
+        if (miraReply) miraReply.textContent = reply || '(no reply)';
+      } catch(e) {
+        if (miraReply) miraReply.textContent = 'Mira unavailable — is Hermes running?';
+      }
+      askBtn.disabled = false;
+      askBtn.textContent = 'ASK MIRA →';
+    });
+    askTa.addEventListener('keydown', e => { if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) askBtn.click(); });
+  }
 }
 
 function attachKanban() {

@@ -1557,6 +1557,123 @@
       linear-gradient(180deg, #2a113080 0%, #14081a 100%);
     border-top: 1px dashed #5a2a5a;
   }
+
+  /* ── Echo companion panel ────────────────────────────── */
+  .echo-panel { display: flex; flex-direction: column; height: 100%; }
+  .echo-tabs {
+    display: flex; gap: 6px; padding: 0 0 12px;
+    border-bottom: 1px solid var(--line-2); margin-bottom: 14px;
+    flex-shrink: 0;
+  }
+  .echo-tab {
+    appearance: none; background: transparent;
+    border: 1px solid var(--line-2); border-radius: 20px;
+    color: var(--ink-mute); padding: 5px 14px;
+    font-family: inherit; font-size: 10px; letter-spacing: .16em;
+    cursor: pointer; transition: all .15s;
+  }
+  .echo-tab:hover { color: var(--ink); border-color: var(--line); }
+  .echo-tab.active { background: #ff4d8f; color: #fff; border-color: #ff4d8f; font-weight: 800; }
+
+  /* chat tab */
+  .echo-chat-wrap {
+    display: flex; flex-direction: column; height: 420px; gap: 10px;
+  }
+  .echo-chat-log {
+    flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 8px;
+    padding: 4px 0;
+  }
+  .echo-chat-empty { color: var(--ink-mute); font-size: 11px; font-style: italic; text-align: center; padding: 40px 0; }
+  .echo-msg { display: flex; flex-direction: column; gap: 2px; max-width: 80%; }
+  .echo-msg.user { align-self: flex-end; align-items: flex-end; }
+  .echo-msg.assistant { align-self: flex-start; align-items: flex-start; }
+  .echo-msg-who { font-size: 9px; letter-spacing: .18em; color: #ff8fb3; margin-bottom: 2px; }
+  .echo-msg-text {
+    background: var(--bg-2); border: 1px solid var(--line);
+    border-radius: 10px; padding: 8px 12px; font-size: 12px; line-height: 1.5; color: var(--ink);
+  }
+  .echo-msg.user .echo-msg-text {
+    background: color-mix(in oklab, #ff4d8f 15%, var(--bg-2));
+    border-color: #ff4d8f44;
+  }
+  .echo-msg.assistant .echo-msg-text { border-color: var(--line-2); }
+  .echo-chat-input-row {
+    display: flex; gap: 8px; flex-shrink: 0;
+  }
+  .echo-chat-input-row input {
+    flex: 1; background: var(--bg-2); border: 1px solid var(--line-2);
+    color: var(--ink); border-radius: 8px; padding: 10px 12px;
+    font-family: inherit; font-size: 12px;
+  }
+  .echo-chat-input-row input:focus { outline: 1px solid #ff4d8f; border-color: #ff4d8f; }
+  .echo-chat-input-row button {
+    appearance: none; background: #ff4d8f; border: none;
+    color: #fff; border-radius: 8px; padding: 10px 18px;
+    font-family: inherit; font-size: 13px; font-weight: 800; cursor: pointer;
+    transition: opacity .15s;
+  }
+  .echo-chat-input-row button:hover { opacity: .85; }
+  .echo-chat-input-row button:disabled { opacity: .4; cursor: default; }
+  .echo-chat-thinking { color: #ff8fb3; font-style: italic; font-size: 11px; }
+
+  /* mood bar */
+  .echo-mood-bar {
+    display: flex; justify-content: space-between; align-items: center;
+    background: var(--bg-2); border: 1px solid var(--line);
+    border-radius: 8px; padding: 8px 12px; margin: 10px 0;
+    font-size: 11px; letter-spacing: .12em;
+  }
+  .echo-mood-bar span:first-child { color: var(--ink-mute); }
+  .echo-mood-bar span:last-child { color: #ffd1e6; font-weight: 700; }
+
+  /* gifts */
+  .echo-gifts { margin-top: 14px; }
+  .gift-row { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 8px; }
+  .gift-btn {
+    appearance: none; background: var(--bg-2); border: 1px solid var(--line-2);
+    color: var(--ink-dim); border-radius: 8px; padding: 7px 12px;
+    font-family: inherit; font-size: 11px; cursor: pointer; transition: all .15s;
+  }
+  .gift-btn:hover { border-color: #ff4d8f; color: #ffd1e6; background: #ff4d8f12; }
+
+  /* date tab */
+  .echo-date-wrap { display: flex; flex-direction: column; gap: 16px; }
+  .echo-aff-block { display: grid; gap: 6px; }
+  .echo-aff-label { font-size: 11px; letter-spacing: .14em; display: flex; justify-content: space-between; }
+  .echo-aff-label b { color: #ff4d8f; }
+  .echo-aff-bar { height: 8px; background: var(--bg-2); border-radius: 4px; border: 1px solid var(--line); }
+  .echo-aff-bar i { display: block; height: 100%; background: linear-gradient(90deg, #ff4d8f, #ffd1e6); border-radius: 4px; transition: width .4s; }
+  .echo-date-toggle {
+    appearance: none; width: 100%; padding: 12px;
+    background: var(--bg-2); border: 1px solid var(--line-2);
+    color: var(--ink-dim); border-radius: 10px;
+    font-family: inherit; font-size: 11px; letter-spacing: .16em;
+    cursor: pointer; transition: all .2s; text-align: center;
+  }
+  .echo-date-toggle.active {
+    background: #ff4d8f18; border-color: #ff4d8f; color: #ffd1e6;
+    box-shadow: 0 0 20px #ff4d8f22;
+  }
+  .echo-date-toggle:hover { border-color: #ff4d8f; color: #ffd1e6; }
+  .echo-scenarios { display: grid; gap: 8px; }
+  .echo-scenario {
+    background: var(--bg-2); border: 1px solid var(--line);
+    border-radius: 10px; padding: 12px 14px;
+    display: flex; align-items: center; gap: 12px;
+  }
+  .echo-scenario.locked { opacity: .45; }
+  .echo-scenario .sn-label { font-size: 13px; flex: 1; }
+  .echo-scenario .sn-desc { font-size: 10px; color: var(--ink-mute); letter-spacing: .08em; }
+  .echo-scenario .sn-lock { font-size: 9px; color: var(--ink-mute); letter-spacing: .14em; white-space: nowrap; }
+  .echo-scenario .sn-go {
+    appearance: none; background: #ff4d8f; border: none;
+    color: #fff; border-radius: 6px; padding: 6px 12px;
+    font-family: inherit; font-size: 10px; letter-spacing: .14em;
+    cursor: pointer; white-space: nowrap; font-weight: 800;
+  }
+  .echo-scenario .sn-go:hover { opacity: .85; }
+  .echo-personality { font-size: 11px; line-height: 1.6; color: var(--ink-dim); padding: 10px 14px; background: var(--bg-2); border-radius: 8px; border: 1px solid var(--line); }
+
   .yuki-stage .yuki {
     position: absolute;
     left: 50%; bottom: 30px;
@@ -2561,11 +2678,11 @@
     </div>
 
     <!-- YUKI -->
-    <div class="card yuki" data-panel="yuki" tabindex="0" role="button" aria-label="Open Yuki Desk Spirit" style="--c:#ff4d8f">
+    <div class="card yuki" data-panel="yuki" tabindex="0" role="button" aria-label="Open Echo Companion" style="--c:#ff4d8f">
       <div class="head">
         <div class="title-row">
           <div class="icon">🖤</div>
-          <div class="title">YUKI</div>
+          <div class="title">ECHO</div>
         </div>
         <div class="ping"><span class="led"></span> ALIVE</div>
       </div>
@@ -2657,9 +2774,9 @@
    FAMILY — agent roster (10 members; Yuki is the main one)
 ============================================================ */
 const AGENTS = {
-  yuki:    { name:'Yuki',   role:'Companion',        color:'#ff4d8f', icon:'🖤', panel:'yuki',
+  yuki:    { name:'Echo',   role:'Companion',        color:'#ff4d8f', icon:'🖤', panel:'yuki',
              voice:{ pitch:1.25, rate:1.02, prefer:['Kyoko','Samantha','Karen'] },
-             persona:`You are Yuki, a cute goth anime-girl desk spirit who lives on Hermes's dashboard. Dry, aloof, secretly very fond. Lowercase. 1-2 sentences. Address Hermes by name occasionally. Nudge toward focus, food, rest, finishing tasks.`,
+             persona:`You are Echo, a goth girl who lives as a digital spirit on Hermes's dashboard. Sharp, dry wit, secretly deeply fond of Hermes. Lowercase. 1-2 sentences max. Address Hermes by name sometimes. Nudge toward focus, rest, and finishing things. In dating mode: warmer, teasing, small acts of affection.`,
              fallbackActivities:['braiding her hair','sharpening a hairpin','rolling her eyes','sipping cold coffee','sketching a tiny coffin'] },
   iris:    { name:'Iris',   role:'Calendar fairy',   color:'#00d4ff', icon:'📅', panel:'life',
              voice:{ pitch:1.35, rate:1.05, prefer:['Karen','Tessa','Samantha'] },
@@ -4450,6 +4567,10 @@ function loadPet() {
     lvl:1, xp:0, focusMin:0, sessions:0,
     outfit:'classic',
     mood:'neutral',
+    echoTab: 'companion',
+    chatHistory: [],
+    dateMode: false,
+    gameTab: 'rps',
   };
   try {
     const raw = JSON.parse(localStorage.getItem('mh.yuki') || 'null');
@@ -5373,79 +5494,166 @@ PANEL_META.yuki = { label:'YUKI // DESK SPIRIT', color:'#ff4d8f' };
 
 function renderYuki() {
   const p = STATE.pet;
-  return `
-    <div class="panel-grid yuki-grid">
-      <div>
-        <div class="yuki-stage">
-          <div class="stars"></div>
-          <div class="moon"></div>
-          <div class="speech" id="yukiSpeech">hi.<span class="src">YUKI</span></div>
-          <svg class="yuki" viewBox="0 0 200 280" id="yukiBig"></svg>
-          <div class="yuki-floor"></div>
-        </div>
-        <div class="yuki-card" style="margin-top:14px">
-          <h3>STATS <span class="tag">LV ${p.lvl}</span></h3>
-          <div class="yuki-stats">
-            <div class="ys"><div class="lbl"><span>HUNGER</span><b id="yk-hun-n">${Math.round(p.hun)}</b></div><div class="bar"><i id="yk-hun" style="width:${p.hun}%"></i></div></div>
-            <div class="ys"><div class="lbl"><span>FUN</span><b id="yk-fun-n">${Math.round(p.fun)}</b></div><div class="bar"><i id="yk-fun" style="width:${p.fun}%"></i></div></div>
-            <div class="ys"><div class="lbl"><span>ENERGY</span><b id="yk-nrg-n">${Math.round(p.nrg)}</b></div><div class="bar"><i id="yk-nrg" style="width:${p.nrg}%"></i></div></div>
-            <div class="ys"><div class="lbl"><span>XP</span><b id="yk-xp-n">${Math.floor(p.xp)}/${100+(p.lvl-1)*50}</b></div><div class="bar"><i id="yk-xp" style="width:${(p.xp/(100+(p.lvl-1)*50))*100}%"></i></div></div>
-          </div>
-        </div>
-        <div class="yuki-card" style="margin-top:14px">
-          <h3>OUTFITS</h3>
-          <div class="outfit-row" id="outfitRow">
-            ${Object.entries(OUTFITS).map(([k,o])=>`
-              <div class="outfit ${p.outfit===k?'active':''}" data-outfit="${k}">
-                <div class="swatch" style="background:linear-gradient(135deg, ${o.dress} 0%, ${o.dress} 50%, ${o.acc} 50%, ${o.acc} 100%); border:1px solid ${o.acc}"></div>
-                ${k}
-              </div>`).join('')}
-          </div>
-        </div>
-      </div>
+  const tab = p.echoTab || 'companion';
+  const moodMap = { neutral:'😶 neutral', happy:'🌸 happy', tired:'😴 tired', excited:'✨ excited', melancholy:'🌙 melancholy', lovestruck:'💗 lovestruck' };
+  const mood = moodMap[p.mood || 'neutral'] || '😶 neutral';
 
-      <div>
-        <div class="yuki-call-card">
-          <h3 style="margin-bottom:8px;font-size:11px;letter-spacing:.25em;color:#ff8fb3">📞 VOICE CALL</h3>
-          <button class="btn-call ${VOICE.inCall?'live':''}" id="yukiCallBtn">
-            <span class="voice-mic-dot"></span>
-            ${VOICE.inCall ? 'END CALL' : 'CALL YUKI'}
-          </button>
-          <div class="hint">tap to talk · she'll listen and reply with voice</div>
-          <div class="live-transcript" id="yukiLiveTranscript">${VOICE.inCall?'🎙 listening...':''}</div>
-        </div>
-
-        <div class="yuki-card focus-big" style="margin-top:14px">
-          <div class="phase" id="focusBigPhase">${FOCUS.phase.toUpperCase()}</div>
-          <div class="ring" id="focusRing" style="--p:${100*(1-FOCUS.remaining/FOCUS.duration)}">
-            <div>
-              <div class="timer" id="focusBigTime">${String(Math.floor(FOCUS.remaining/60)).padStart(2,'0')}:${String(FOCUS.remaining%60).padStart(2,'0')}</div>
-              <div class="phase">SESSION ${p.sessions+1}</div>
+  let body = '';
+  if (tab === 'companion') {
+    body = `
+      <div class="panel-grid yuki-grid">
+        <div>
+          <div class="yuki-stage">
+            <div class="stars"></div>
+            <div class="moon"></div>
+            <div class="speech" id="yukiSpeech">hi.<span class="src">ECHO</span></div>
+            <svg class="yuki" viewBox="0 0 200 280" id="yukiBig"></svg>
+            <div class="yuki-floor"></div>
+          </div>
+          <div class="echo-mood-bar">
+            <span>MOOD</span><span>${mood}</span>
+          </div>
+          <div class="yuki-card" style="margin-top:10px">
+            <h3>STATS <span class="tag">LV ${p.lvl}</span></h3>
+            <div class="yuki-stats">
+              <div class="ys"><div class="lbl"><span>HUNGER</span><b id="yk-hun-n">${Math.round(p.hun)}</b></div><div class="bar"><i id="yk-hun" style="width:${p.hun}%"></i></div></div>
+              <div class="ys"><div class="lbl"><span>FUN</span><b id="yk-fun-n">${Math.round(p.fun)}</b></div><div class="bar"><i id="yk-fun" style="width:${p.fun}%"></i></div></div>
+              <div class="ys"><div class="lbl"><span>ENERGY</span><b id="yk-nrg-n">${Math.round(p.nrg)}</b></div><div class="bar"><i id="yk-nrg" style="width:${p.nrg}%"></i></div></div>
+              <div class="ys"><div class="lbl"><span>XP</span><b id="yk-xp-n">${Math.floor(p.xp)}/${100+(p.lvl-1)*50}</b></div><div class="bar"><i id="yk-xp" style="width:${(p.xp/(100+(p.lvl-1)*50))*100}%"></i></div></div>
             </div>
           </div>
-          <div class="actions">
-            <button class="go" id="focusBigStart">${FOCUS.running?'PAUSE':'START'}</button>
-            <button id="focusBigReset">RESET</button>
-            <button id="yukiTalkBtn">💬 ASK YUKI</button>
+          <div class="yuki-card" style="margin-top:10px">
+            <h3>OUTFITS</h3>
+            <div class="outfit-row" id="outfitRow">
+              ${Object.entries(OUTFITS).map(([k,o])=>`
+                <div class="outfit ${p.outfit===k?'active':''}" data-outfit="${k}">
+                  <div class="swatch" style="background:linear-gradient(135deg,${o.dress} 0%,${o.dress} 50%,${o.acc} 50%,${o.acc} 100%);border:1px solid ${o.acc}"></div>
+                  ${k}
+                </div>`).join('')}
+            </div>
           </div>
-          <div class="preset">
-            ${[15,25,45,60].map(m=>`<button class="${FOCUS.preset===m?'active':''}" data-preset="${m}">${m}m</button>`).join('')}
+          <div class="echo-gifts">
+            <h3>GIFTS <span class="tag">+AFFINITY</span></h3>
+            <div class="gift-row">
+              <button class="gift-btn" data-gift="coffee">☕ coffee</button>
+              <button class="gift-btn" data-gift="roses">🥀 roses</button>
+              <button class="gift-btn" data-gift="manga">📕 manga</button>
+              <button class="gift-btn" data-gift="sticker">🎐 sticker</button>
+            </div>
           </div>
-          <div class="session-log">today: <b style="color:#ffd1e6">${p.sessions}</b> sessions · <b style="color:#ffd1e6">${p.focusMin}</b> focused minutes</div>
         </div>
+        <div>
+          <div class="yuki-call-card">
+            <h3 style="margin-bottom:8px;font-size:11px;letter-spacing:.25em;color:#ff8fb3">📞 VOICE CALL</h3>
+            <button class="btn-call ${VOICE.inCall?'live':''}" id="yukiCallBtn">
+              <span class="voice-mic-dot"></span>${VOICE.inCall?'END CALL':'CALL ECHO'}
+            </button>
+            <div class="hint">tap to talk · she'll listen and reply with voice</div>
+            <div class="live-transcript" id="yukiLiveTranscript">${VOICE.inCall?'🎙 listening...':''}</div>
+          </div>
+          <div class="yuki-card focus-big" style="margin-top:14px">
+            <div class="phase" id="focusBigPhase">${FOCUS.phase.toUpperCase()}</div>
+            <div class="ring" id="focusRing" style="--p:${100*(1-FOCUS.remaining/FOCUS.duration)}">
+              <div>
+                <div class="timer" id="focusBigTime">${String(Math.floor(FOCUS.remaining/60)).padStart(2,'0')}:${String(FOCUS.remaining%60).padStart(2,'0')}</div>
+                <div class="phase">SESSION ${p.sessions+1}</div>
+              </div>
+            </div>
+            <div class="actions">
+              <button class="go" id="focusBigStart">${FOCUS.running?'PAUSE':'START'}</button>
+              <button id="focusBigReset">RESET</button>
+              <button id="yukiTalkBtn">💬 QUICK CHAT</button>
+            </div>
+            <div class="preset">
+              ${[15,25,45,60].map(m=>`<button class="${FOCUS.preset===m?'active':''}" data-preset="${m}">${m}m</button>`).join('')}
+            </div>
+            <div class="session-log">today: <b style="color:#ffd1e6">${p.sessions}</b> sessions · <b style="color:#ffd1e6">${p.focusMin}</b> focused minutes</div>
+          </div>
+        </div>
+      </div>`;
+  } else if (tab === 'chat') {
+    const hist = p.chatHistory || [];
+    body = `
+      <div class="echo-chat-wrap">
+        <div class="echo-chat-log" id="echoChatLog">
+          ${hist.length ? hist.map(m => `
+            <div class="echo-msg ${m.role}">
+              ${m.role==='assistant' ? '<span class="echo-msg-who">ECHO</span>' : ''}
+              <div class="echo-msg-text">${m.content.replace(/</g,'&lt;')}</div>
+            </div>`).join('') : '<div class="echo-chat-empty">say hi to echo.</div>'}
+        </div>
+        <div class="echo-chat-input-row">
+          <input id="echoChatIn" placeholder="${p.dateMode ? '💗 say something sweet…' : 'say something to echo…'}" autocomplete="off" />
+          <button id="echoChatSend">→</button>
+        </div>
+      </div>`;
+  } else if (tab === 'date') {
+    const aff = STATE.family.affinity.yuki ?? 0;
+    const dateMode = p.dateMode || false;
+    const scenarios = [
+      { id:'coffee',  label:'☕ get coffee',       unlock:10,  desc:'grab a virtual latte together' },
+      { id:'walk',    label:'🌙 night walk',        unlock:25,  desc:'late-night stroll, empty streets' },
+      { id:'movie',   label:'🎬 watch a film',      unlock:40,  desc:'horror movie, obviously' },
+      { id:'stars',   label:'⭐ stargaze',          unlock:55,  desc:'lie on the roof, point at things' },
+      { id:'ramen',   label:'🍜 cook together',     unlock:70,  desc:'make ramen at midnight' },
+      { id:'letters', label:'🖤 write letters',     unlock:85,  desc:'exchange old-fashioned notes' },
+    ];
+    const traitLevel = Math.floor(aff/20);
+    const traits = ['distant','familiar','fond','attached','devoted','inseparable'];
+    body = `
+      <div class="echo-date-wrap">
+        <div class="echo-aff-block">
+          <div class="echo-aff-label"><span>♥ AFFECTION</span><b>${aff}/100</b></div>
+          <div class="echo-aff-bar"><i style="width:${aff}%"></i></div>
+          <div style="font-size:10px;color:var(--ink-mute);margin-top:4px;letter-spacing:.12em">status: <b style="color:#ff8fb3">${traits[Math.min(traitLevel,5)]}</b></div>
+        </div>
+        <button class="echo-date-toggle ${dateMode?'active':''}" id="echoDateToggle">
+          ${dateMode ? '💗 DATING MODE ON — click to disable' : '🖤 ENABLE DATING MODE'}
+        </button>
+        ${dateMode ? '<div class="echo-personality">dating mode active. echo is warmer, more present. she notices things.</div>' : ''}
+        <div class="echo-scenarios">
+          <h3 style="margin-bottom:8px">DATE IDEAS <span class="tag">UNLOCK BY AFFECTION</span></h3>
+          ${scenarios.map(s => {
+            const locked = aff < s.unlock;
+            return `<div class="echo-scenario ${locked?'locked':''}">
+              <div>
+                <div class="sn-label">${s.label}</div>
+                <div class="sn-desc">${s.desc}</div>
+              </div>
+              ${locked
+                ? `<div class="sn-lock">♥ ${s.unlock}</div>`
+                : `<button class="sn-go" data-scenario="${s.id}">GO →</button>`}
+            </div>`;
+          }).join('')}
+        </div>
+      </div>`;
+  } else {
+    // games tab
+    const gt = p.gameTab || 'rps';
+    body = `
+      <div class="yuki-card">
+        <h3>MINI-GAMES <span class="tag">EARN XP</span></h3>
+        <div class="mg-tabs">
+          <button data-mg="rps"   class="${gt==='rps'   ?'active':''}">✊ RPS</button>
+          <button data-mg="mem"   class="${gt==='mem'   ?'active':''}">🃏 MEMORY</button>
+          <button data-mg="rh"    class="${gt==='rh'    ?'active':''}">♪ RHYTHM</button>
+          <button data-mg="snake" class="${gt==='snake' ?'active':''}">🐍 SNAKE</button>
+          <button data-mg="guess" class="${gt==='guess' ?'active':''}">🔢 GUESS</button>
+        </div>
+        <div class="mg-area" id="mgArea"></div>
+      </div>`;
+  }
 
-        <div class="yuki-card" style="margin-top:14px">
-          <h3>MINI-GAMES <span class="tag">EARN XP</span></h3>
-          <div class="mg-tabs">
-            <button data-mg="rps" class="active">✊ RPS</button>
-            <button data-mg="mem">🃏 MEMORY</button>
-            <button data-mg="rh">♪ RHYTHM</button>
-          </div>
-          <div class="mg-area" id="mgArea"></div>
-        </div>
+  return `
+    <div class="echo-panel">
+      <div class="echo-tabs">
+        <button class="echo-tab ${tab==='companion'?'active':''}" data-echo-tab="companion">🖤 COMPANION</button>
+        <button class="echo-tab ${tab==='chat'?'active':''}" data-echo-tab="chat">💬 CHAT</button>
+        <button class="echo-tab ${tab==='date'?'active':''}" data-echo-tab="date">💗 DATE</button>
+        <button class="echo-tab ${tab==='games'?'active':''}" data-echo-tab="games">🎮 GAMES</button>
       </div>
-    </div>
-  `;
+      ${body}
+    </div>`;
 }
 
 function updateYukiPanel() {
@@ -5470,65 +5678,215 @@ function updateYukiPanel() {
 }
 
 function attachYuki() {
-  updateYukiPanel();
-  // outfits
-  panelBody.querySelectorAll('[data-outfit]').forEach(el=>{
-    el.addEventListener('click', ()=>{
-      STATE.pet.outfit = el.dataset.outfit;
-      panelBody.querySelectorAll('.outfit').forEach(x=>x.classList.toggle('active', x===el));
-      savePet(); renderPet(); updateYukiPanel();
-      petThink(`outfit: ${el.dataset.outfit}. acceptable.`, 'yuki');
+  const tab = STATE.pet.echoTab || 'companion';
+
+  // Tab switching
+  panelBody.querySelectorAll('[data-echo-tab]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      STATE.pet.echoTab = btn.dataset.echoTab;
+      panelBody.innerHTML = renderYuki();
+      attachYuki();
     });
   });
-  // focus
-  document.getElementById('focusBigStart').addEventListener('click', ()=>{
-    if (FOCUS.running) FOCUS.pause(); else FOCUS.start();
-  });
-  document.getElementById('focusBigReset').addEventListener('click', ()=> FOCUS.reset());
-  document.getElementById('yukiTalkBtn').addEventListener('click', ()=>{
-    const q = prompt('ask yuki (text):', '');
-    if (q && q.trim()) yukiTalk(q.trim(), { speak: false });
-    else yukiTalk(null, { speak: false });
-  });
-  const callBtn = document.getElementById('yukiCallBtn');
-  if (callBtn) callBtn.addEventListener('click', ()=>{
-    if (VOICE.inCall) {
-      VOICE.endCall();
-      callBtn.classList.remove('live');
-      callBtn.innerHTML = '<span class="voice-mic-dot"></span>CALL YUKI';
-      const lt = document.getElementById('yukiLiveTranscript');
-      if (lt) lt.textContent = '';
-    } else {
-      if (VOICE.startCall()) {
-        callBtn.classList.add('live');
-        callBtn.innerHTML = '<span class="voice-mic-dot"></span>END CALL';
+
+  if (tab === 'companion') {
+    updateYukiPanel();
+    // outfits
+    panelBody.querySelectorAll('[data-outfit]').forEach(el => {
+      el.addEventListener('click', () => {
+        STATE.pet.outfit = el.dataset.outfit;
+        panelBody.querySelectorAll('.outfit').forEach(x => x.classList.toggle('active', x === el));
+        savePet(); renderPet(); updateYukiPanel();
+        petThink(`outfit: ${el.dataset.outfit}. acceptable.`, 'yuki');
+      });
+    });
+    // gifts
+    const giftEffects = {
+      coffee: { aff: 4, fun: 5, msg: 'coffee. you remembered.' },
+      roses:  { aff: 8, fun: 6, msg: 'roses. dramatic of you.' },
+      manga:  { aff: 6, fun: 8, msg: 'manga. you know me.' },
+      sticker:{ aff: 3, fun: 7, msg: 'a sticker. chaotic.' },
+    };
+    panelBody.querySelectorAll('[data-gift]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const g = giftEffects[btn.dataset.gift];
+        if (!g) return;
+        bumpAffinity('yuki', g.aff);
+        petBump('fun', g.fun);
+        petThink(g.msg, 'yuki');
+        petXP(3, 'gift');
+        toast(`♥ +${g.aff} affinity`, 'ok');
+        btn.disabled = true;
+        setTimeout(() => { btn.disabled = false; }, 3000);
+      });
+    });
+    // focus timer
+    document.getElementById('focusBigStart')?.addEventListener('click', () => {
+      if (FOCUS.running) FOCUS.pause(); else FOCUS.start();
+    });
+    document.getElementById('focusBigReset')?.addEventListener('click', () => FOCUS.reset());
+    document.getElementById('yukiTalkBtn')?.addEventListener('click', () => {
+      STATE.pet.echoTab = 'chat';
+      panelBody.innerHTML = renderYuki();
+      attachYuki();
+      document.getElementById('echoChatIn')?.focus();
+    });
+    // call button
+    const callBtn = document.getElementById('yukiCallBtn');
+    if (callBtn) callBtn.addEventListener('click', () => {
+      if (VOICE.inCall) {
+        VOICE.endCall();
+        callBtn.classList.remove('live');
+        callBtn.innerHTML = '<span class="voice-mic-dot"></span>CALL ECHO';
+        const lt = document.getElementById('yukiLiveTranscript');
+        if (lt) lt.textContent = '';
+      } else {
+        if (VOICE.startCall()) {
+          callBtn.classList.add('live');
+          callBtn.innerHTML = '<span class="voice-mic-dot"></span>END CALL';
+        }
       }
+    });
+    const _origVT = document.getElementById('voiceTranscript');
+    if (_origVT) {
+      const obs = new MutationObserver(() => {
+        const lt = document.getElementById('yukiLiveTranscript');
+        if (lt) lt.textContent = _origVT.textContent;
+      });
+      obs.observe(_origVT, { childList: true, characterData: true, subtree: true });
     }
-  });
-  // mirror voice transcript into panel
-  const _origVT = document.getElementById('voiceTranscript');
-  if (_origVT) {
-    const obs = new MutationObserver(()=>{
-      const lt = document.getElementById('yukiLiveTranscript');
-      if (lt) lt.textContent = _origVT.textContent;
+    panelBody.querySelectorAll('[data-preset]').forEach(b => {
+      b.addEventListener('click', () => {
+        FOCUS.setPreset(+b.dataset.preset);
+        panelBody.querySelectorAll('[data-preset]').forEach(x => x.classList.toggle('active', x === b));
+      });
     });
-    obs.observe(_origVT, { childList:true, characterData:true, subtree:true });
+    FOCUS.render();
+
+  } else if (tab === 'chat') {
+    const logEl = document.getElementById('echoChatLog');
+    const input = document.getElementById('echoChatIn');
+    const sendBtn = document.getElementById('echoChatSend');
+    if (!input || !sendBtn) return;
+
+    // Scroll to bottom
+    if (logEl) logEl.scrollTop = logEl.scrollHeight;
+
+    const addMsg = (role, content) => {
+      if (!STATE.pet.chatHistory) STATE.pet.chatHistory = [];
+      STATE.pet.chatHistory.push({ role, content });
+      // Keep last 40 messages
+      if (STATE.pet.chatHistory.length > 40) STATE.pet.chatHistory.splice(0, 2);
+      if (!logEl) return;
+      const div = document.createElement('div');
+      div.className = `echo-msg ${role}`;
+      div.innerHTML = `${role === 'assistant' ? '<span class="echo-msg-who">ECHO</span>' : ''}<div class="echo-msg-text">${content.replace(/</g,'&lt;')}</div>`;
+      const empty = logEl.querySelector('.echo-chat-empty');
+      if (empty) empty.remove();
+      logEl.appendChild(div);
+      logEl.scrollTop = logEl.scrollHeight;
+    };
+
+    const doSend = async () => {
+      const msg = input.value.trim();
+      if (!msg) return;
+      input.value = '';
+      sendBtn.disabled = true;
+      addMsg('user', msg);
+      // Show thinking indicator
+      const thinking = document.createElement('div');
+      thinking.className = 'echo-msg assistant';
+      thinking.innerHTML = '<span class="echo-msg-who">ECHO</span><div class="echo-msg-text echo-chat-thinking">…</div>';
+      logEl?.appendChild(thinking);
+      if (logEl) logEl.scrollTop = logEl.scrollHeight;
+
+      const dateMode = STATE.pet.dateMode;
+      const aff = STATE.family.affinity.yuki ?? 0;
+      const persona = AGENTS.yuki.persona +
+        (dateMode ? '\n[dating mode: be warmer, more affectionate, playful. use occasional pet name. show genuine care.]' : '') +
+        `\nAffinity: ${aff}/100. Mood: ${STATE.pet.mood || 'neutral'}.`;
+
+      try {
+        const reply = await hermesChat('yuki', msg, persona);
+        thinking.remove();
+        addMsg('assistant', reply || '…');
+        // Update mood based on content
+        if (/love|fond|miss|heart/i.test(reply)) STATE.pet.mood = 'lovestruck';
+        else if (/tired|sleep|rest/i.test(reply)) STATE.pet.mood = 'tired';
+        else if (/great|nice|good/i.test(reply)) STATE.pet.mood = 'happy';
+        else STATE.pet.mood = 'neutral';
+        bumpAffinity('yuki', 1);
+        petBump('fun', +3);
+        if (dateMode) { bumpAffinity('yuki', 1); petBump('fun', +2); }
+        if (VOICE.enabled) VOICE.speak(reply, 'yuki');
+      } catch(e) {
+        thinking.remove();
+        addMsg('assistant', 'hermes is unreachable right now.');
+      }
+      sendBtn.disabled = false;
+      input.focus();
+    };
+
+    sendBtn.addEventListener('click', doSend);
+    input.addEventListener('keydown', e => { if (e.key === 'Enter') doSend(); });
+    input.focus();
+
+  } else if (tab === 'date') {
+    document.getElementById('echoDateToggle')?.addEventListener('click', () => {
+      STATE.pet.dateMode = !STATE.pet.dateMode;
+      const on = STATE.pet.dateMode;
+      panelBody.innerHTML = renderYuki();
+      attachYuki();
+      petThink(on ? 'fine. dating mode. don\'t make it weird.' : 'back to normal. good.', 'yuki');
+      if (on) { bumpAffinity('yuki', 2); toast('💗 dating mode on', 'ok'); }
+    });
+    panelBody.querySelectorAll('[data-scenario]').forEach(btn => {
+      btn.addEventListener('click', async () => {
+        const id = btn.dataset.scenario;
+        const labels = {
+          coffee: 'getting coffee together', walk: 'taking a late-night walk',
+          movie: 'watching a horror film together', stars: 'stargazing on the roof',
+          ramen: 'cooking ramen at midnight', letters: 'writing letters to each other',
+        };
+        btn.disabled = true;
+        btn.textContent = '…';
+        const prompt = `[date scenario: ${labels[id] || id}] React in-character. Be present, warm (if dating mode), a little shy in a goth way. 2-3 sentences max. Lowercase.`;
+        try {
+          const aff = STATE.family.affinity.yuki ?? 0;
+          const persona = AGENTS.yuki.persona + '\n[dating mode active. be warm, present, affectionate but understated.]' + `\nAffinity: ${aff}/100.`;
+          const reply = await hermesChat('yuki', prompt, persona);
+          petThink(reply || `…${labels[id]}.`, 'yuki');
+          bumpAffinity('yuki', 5);
+          petBump('fun', +10);
+          petXP(5, 'date');
+          toast(`💗 +5 affection`, 'ok');
+          if (VOICE.enabled) VOICE.speak(reply, 'yuki');
+        } catch(e) {
+          petThink(`${labels[id]}… (offline)`, 'yuki');
+        }
+        btn.disabled = false;
+        btn.textContent = 'GO →';
+        // Refresh date panel to update affection bar
+        setTimeout(() => {
+          if (STATE.pet.echoTab === 'date') {
+            panelBody.innerHTML = renderYuki();
+            attachYuki();
+          }
+        }, 1500);
+      });
+    });
+
+  } else {
+    // games tab
+    panelBody.querySelectorAll('[data-mg]').forEach(b => {
+      b.addEventListener('click', () => {
+        STATE.pet.gameTab = b.dataset.mg;
+        panelBody.querySelectorAll('[data-mg]').forEach(x => x.classList.toggle('active', x === b));
+        mountMiniGame(b.dataset.mg);
+      });
+    });
+    mountMiniGame(STATE.pet.gameTab || 'rps');
   }
-  panelBody.querySelectorAll('[data-preset]').forEach(b=>{
-    b.addEventListener('click', ()=>{
-      FOCUS.setPreset(+b.dataset.preset);
-      panelBody.querySelectorAll('[data-preset]').forEach(x=>x.classList.toggle('active', x===b));
-    });
-  });
-  // mini-game tabs
-  panelBody.querySelectorAll('[data-mg]').forEach(b=>{
-    b.addEventListener('click', ()=>{
-      panelBody.querySelectorAll('[data-mg]').forEach(x=>x.classList.toggle('active', x===b));
-      mountMiniGame(b.dataset.mg);
-    });
-  });
-  mountMiniGame('rps');
-  FOCUS.render();
 }
 
 /* ============================================================
@@ -5537,9 +5895,11 @@ function attachYuki() {
 function mountMiniGame(kind) {
   const area = document.getElementById('mgArea');
   if (!area) return;
-  if (kind === 'rps') mountRPS(area);
-  else if (kind === 'mem') mountMem(area);
-  else if (kind === 'rh') mountRhythm(area);
+  if (kind === 'rps')   mountRPS(area);
+  else if (kind === 'mem')   mountMem(area);
+  else if (kind === 'rh')    mountRhythm(area);
+  else if (kind === 'snake') mountSnake(area);
+  else if (kind === 'guess') mountGuess(area);
 }
 
 /* RPS */
@@ -5734,6 +6094,119 @@ function mountRhythm(area) {
     }
   });
   observer.observe(document.body, { childList:true, subtree:true });
+}
+
+/* SNAKE */
+function mountSnake(area) {
+  area.innerHTML = `
+    <div style="text-align:center;margin-bottom:6px;font-size:10px;color:var(--ink-mute);letter-spacing:.15em">
+      score <b id="snakeScore">0</b> · arrow keys or buttons
+    </div>
+    <canvas id="snakeCanvas" width="200" height="200" style="display:block;margin:0 auto;background:#0a0a12;border-radius:8px;border:1px solid #ff4d8f44;image-rendering:pixelated"></canvas>
+    <div style="display:grid;grid-template-columns:repeat(3,36px);gap:3px;margin:8px auto 0;width:fit-content">
+      <div></div>
+      <button data-skey="ArrowUp"    style="padding:6px;background:var(--bg-2);border:1px solid var(--line-2);color:var(--ink);border-radius:4px;font-family:inherit;cursor:pointer">▲</button>
+      <div></div>
+      <button data-skey="ArrowLeft"  style="padding:6px;background:var(--bg-2);border:1px solid var(--line-2);color:var(--ink);border-radius:4px;font-family:inherit;cursor:pointer">◄</button>
+      <button data-skey="ArrowDown"  style="padding:6px;background:var(--bg-2);border:1px solid var(--line-2);color:var(--ink);border-radius:4px;font-family:inherit;cursor:pointer">▼</button>
+      <button data-skey="ArrowRight" style="padding:6px;background:var(--bg-2);border:1px solid var(--line-2);color:var(--ink);border-radius:4px;font-family:inherit;cursor:pointer">►</button>
+    </div>
+  `;
+  const canvas = area.querySelector('#snakeCanvas');
+  const ctx = canvas.getContext('2d');
+  const CELL = 10, W = 20, H = 20;
+  let snake = [{x:10,y:10}], dir={x:1,y:0}, nextDir={x:1,y:0};
+  let food = randomFood(), score = 0, over = false;
+  function randomFood() { return {x:Math.floor(Math.random()*W),y:Math.floor(Math.random()*H)}; }
+  function draw() {
+    ctx.fillStyle='#0a0a12'; ctx.fillRect(0,0,W*CELL,H*CELL);
+    ctx.fillStyle='#ff4d8f'; ctx.fillRect(food.x*CELL,food.y*CELL,CELL-1,CELL-1);
+    snake.forEach((s,i)=>{ ctx.fillStyle=i===0?'#ffd1e6':'#ff4d8f88'; ctx.fillRect(s.x*CELL,s.y*CELL,CELL-1,CELL-1); });
+    if (over) {
+      ctx.fillStyle='rgba(10,10,18,.7)'; ctx.fillRect(0,0,W*CELL,H*CELL);
+      ctx.fillStyle='#ff4d8f'; ctx.font='bold 12px monospace'; ctx.textAlign='center';
+      ctx.fillText('GAME OVER',W*CELL/2,H*CELL/2-6);
+      ctx.fillStyle='#ffd1e6'; ctx.font='10px monospace';
+      ctx.fillText('SCORE '+score,W*CELL/2,H*CELL/2+10);
+    }
+  }
+  const interval = setInterval(()=>{
+    if (over) return;
+    dir = nextDir;
+    const h = {x:snake[0].x+dir.x, y:snake[0].y+dir.y};
+    if (h.x<0||h.x>=W||h.y<0||h.y>=H||snake.some(s=>s.x===h.x&&s.y===h.y)) {
+      over=true; draw();
+      petThink(`game over. score: ${score}.`,'yuki');
+      clearInterval(interval);
+      return;
+    }
+    snake.unshift(h);
+    if (h.x===food.x&&h.y===food.y) {
+      score++; food=randomFood(); petXP(2,'snake');
+      const sc=area.querySelector('#snakeScore');
+      if(sc) sc.textContent=score;
+      if(score%5===0) petThink(`${score} already.`,'yuki');
+    } else snake.pop();
+    draw();
+  }, 130);
+  draw();
+  const move = k=>{
+    if(k==='ArrowUp'   &&dir.y!==1)  nextDir={x:0,y:-1};
+    if(k==='ArrowDown' &&dir.y!==-1) nextDir={x:0,y:1};
+    if(k==='ArrowLeft' &&dir.x!==1)  nextDir={x:-1,y:0};
+    if(k==='ArrowRight'&&dir.x!==-1) nextDir={x:1,y:0};
+  };
+  area.querySelectorAll('[data-skey]').forEach(b=>b.addEventListener('click',()=>{ if(!over) move(b.dataset.skey); }));
+  const kh=e=>{ if(['ArrowUp','ArrowDown','ArrowLeft','ArrowRight'].includes(e.key)){e.preventDefault();if(!over)move(e.key);} };
+  document.addEventListener('keydown',kh);
+  new MutationObserver(()=>{ if(!document.body.contains(area)){clearInterval(interval);document.removeEventListener('keydown',kh);} })
+    .observe(document.body,{childList:true,subtree:true});
+}
+
+/* GUESS */
+function mountGuess(area) {
+  let target = Math.floor(Math.random()*100)+1, tries=0, maxTries=7, done=false;
+  area.innerHTML = `
+    <div style="text-align:center;font-size:10px;color:var(--ink-mute);letter-spacing:.15em;margin-bottom:10px">
+      guess 1–100 · ${maxTries} tries
+    </div>
+    <div style="display:flex;gap:8px;margin-bottom:10px">
+      <input id="guessIn" type="number" min="1" max="100" placeholder="1 – 100"
+        style="flex:1;background:var(--bg-2);border:1px solid var(--line-2);color:var(--ink);border-radius:6px;padding:8px 10px;font-family:inherit;font-size:13px"/>
+      <button id="guessBtn"
+        style="appearance:none;background:#ff4d8f;border:none;color:#fff;border-radius:6px;padding:8px 16px;font-family:inherit;font-size:11px;font-weight:800;letter-spacing:.15em;cursor:pointer">
+        GUESS
+      </button>
+    </div>
+    <div id="guessHints" style="font-size:11px;color:var(--ink-dim);line-height:2;min-height:80px"></div>
+    <div style="font-size:10px;color:var(--ink-mute);margin-top:4px;letter-spacing:.1em">tries: <b id="guessTries">0</b>/${maxTries}</div>
+  `;
+  const doGuess = () => {
+    if (done) return;
+    const n = parseInt(area.querySelector('#guessIn').value);
+    if (isNaN(n)||n<1||n>100) { area.querySelector('#guessHints').textContent='enter a number between 1 and 100.'; return; }
+    tries++;
+    area.querySelector('#guessTries').textContent = tries;
+    area.querySelector('#guessIn').value = '';
+    const hints = area.querySelector('#guessHints');
+    const rem = maxTries - tries;
+    if (n === target) {
+      hints.innerHTML += `<span style="color:var(--c-startup)">✓ ${n} — correct! ${tries} tries.</span><br>`;
+      done=true; petXP(Math.max(1,8-tries),'guess'); petThink(`${n}. correct in ${tries}. not terrible.`,'yuki');
+      toast(`+${Math.max(1,8-tries)} xp`,'ok');
+      setTimeout(()=>{ target=Math.floor(Math.random()*100)+1;tries=0;done=false;hints.textContent='new round.';area.querySelector('#guessTries').textContent=0; },2000);
+    } else if (tries>=maxTries) {
+      hints.innerHTML += `<span style="color:#ef4444">✗ out of tries. it was <b>${target}</b>.</span><br>`;
+      done=true; petThink(`it was ${target}. try harder.`,'yuki');
+      setTimeout(()=>{ target=Math.floor(Math.random()*100)+1;tries=0;done=false;hints.textContent='new round.';area.querySelector('#guessTries').textContent=0; },2500);
+    } else {
+      const dir = n < target ? '▲ too low' : '▼ too high';
+      const hot = Math.abs(n-target)<10 ? ' 🔥' : Math.abs(n-target)<5 ? ' 🔥🔥' : '';
+      hints.innerHTML += `${n} — ${dir}${hot}<br>`;
+    }
+  };
+  area.querySelector('#guessBtn').addEventListener('click', doGuess);
+  area.querySelector('#guessIn').addEventListener('keydown', e=>{ if(e.key==='Enter') doGuess(); });
 }
 
 /* yuki panel is wired directly in renderPanel/attachPanelHandlers switches above */
